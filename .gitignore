@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# 3rd party libraries for OpenGL
+raw-examples/opengl/3rd-party
+
+# Output directories
+build
