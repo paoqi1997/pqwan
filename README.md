@@ -1,2 +1,3 @@
 # pqwan
-Some wheels about game development
+
+pqwan是一个面向游戏开发者的工具箱，目前还在规划阶段。

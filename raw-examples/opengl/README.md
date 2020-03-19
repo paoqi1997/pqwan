@@ -4,15 +4,15 @@
 
 ## [GLFW](https://www.glfw.org)
 
-CMake不解释。
+通过CMake构建GLFW。
 
 ## [GLAD](https://glad.dav1d.de)
 
 API.gl选择4.4，Profile选择Core，点击Generate按钮来生成库文件。
 
-拿到 glad.zip 后对其进行解压，在 glad 文件夹下创建 CMakeLists.txt 文件并添加以下内容：
+和GLFW一样，请通过CMake构建GLAD。
 
-CMake第二次不解释。
+拿到 glad.zip 后对其进行解压，在 glad 文件夹下创建 CMakeLists.txt 文件并添加以下内容：
 
 ```
 cmake_minimum_required (VERSION 3.4)
