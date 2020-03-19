@@ -5,7 +5,9 @@
 
 using namespace std;
 
+// 窗口大小变化时回调
 void frameBufferSizeCB(GLFWwindow *window, int width, int height);
+// 处理输入
 void processInput(GLFWwindow *window);
 
 int main()
@@ -25,15 +27,17 @@ int main()
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, frameBufferSizeCB);
 
+    // 加载OpenGL函数指针
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
         cout << "error: gladLoadGLLoader()" << endl;
         return 1;
     }
 
+    // 渲染循环
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(1.0f, 1.0f, 0.6f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glfwSwapBuffers(window);
