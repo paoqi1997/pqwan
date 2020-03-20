@@ -1,6 +1,7 @@
 # Configure 3rd party libraries for OpenGL
 
-看不懂以下内容可以参考这篇[教程](https://learnopengl-cn.github.io/01%20Getting%20started/01%20OpenGL/)。
+本篇内容提炼自 LearnOpenGL CN 的入门部分的 [创建窗口](https://learnopengl-cn.github.io/01%20Getting%20started/02%20Creating%20a%20window/) 章节，
+原版英文教程的对应章节在[这里](https://learnopengl.com/Getting-started/Creating-a-window)。
 
 ## [GLFW](https://www.glfw.org)
 
