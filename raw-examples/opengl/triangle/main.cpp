@@ -1,4 +1,3 @@
-#include <cmath>
 #include <iostream>
 
 #include <glad/glad.h>
@@ -51,7 +50,7 @@ int main()
     }
 
     int flag;
-    char buf[BUFSIZE];
+    char infoLog[BUFSIZE];
 
     // 顶点着色器
     int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -60,19 +59,19 @@ int main()
 
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &flag);
     if (!flag) {
-        glGetShaderInfoLog(vertexShader, BUFSIZE, nullptr, buf);
-        cout << "error: SHADER::VERTEX::COMPILATION" << endl;
+        glGetShaderInfoLog(vertexShader, BUFSIZE, nullptr, infoLog);
+        cout << "error: SHADER::VERTEX::COMPILATION\n" << infoLog << endl;
     }
 
-    // 片段着色器
+    // 片元着色器
     int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
     glCompileShader(fragmentShader);
 
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &flag);
     if (!flag) {
-        glGetShaderInfoLog(fragmentShader, BUFSIZE, nullptr, buf);
-        cout << "error: SHADER::FRAGMENT::COMPILATION" << endl;
+        glGetShaderInfoLog(fragmentShader, BUFSIZE, nullptr, infoLog);
+        cout << "error: SHADER::FRAGMENT::COMPILATION\n" << infoLog << endl;
     }
 
     // 着色器程序
@@ -83,22 +82,22 @@ int main()
 
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &flag);
     if (!flag) {
-        glGetProgramInfoLog(shaderProgram, BUFSIZE, nullptr, buf);
-        cout << "error: SHADER::PROGRAM::LINKING" << endl;
+        glGetProgramInfoLog(shaderProgram, BUFSIZE, nullptr, infoLog);
+        cout << "error: SHADER::PROGRAM::LINKING\n" << infoLog << endl;
     }
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
     /**
-     *     2
+     *     1
      *   +   +
-     * 0 + + + 1
+     * 0 + + + 2
      */
     float vertices[] = {
         -0.5f, -0.5f, 0.0f, // 0
-         0.5f, -0.5f, 0.0f, // 1
-         0.0f,  0.5f, 0.0f  // 2
+         0.0f,  0.5f, 0.0f, // 1
+         0.5f, -0.5f, 0.0f  // 2
     };
 
     // 使用一个顶点缓冲对象将顶点数据拷贝至缓冲中
@@ -131,6 +130,7 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    // 渲染循环
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
 
