@@ -90,15 +90,22 @@ int main()
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-    /**
-     *     2
-     *   +   +
-     * 0 + + + 1
-     */
+    // 定义4个顶点，其中2个顶点用了2次
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f, // 0
-         0.5f, -0.5f, 0.0f, // 1
-         0.0f,  0.5f, 0.0f  // 2
+        -0.5f, -0.5f, 0.0f, // 左下
+        -0.5f,  0.5f, 0.0f, // 左上
+         0.5f,  0.5f, 0.0f, // 右上
+         0.5f, -0.5f, 0.0f  // 右下
+    };
+
+    /**
+     * 1 + 2
+     * + + +
+     * 0 + 3
+     */
+    unsigned int indices[] = {
+        0, 1, 3, // 第一个三角形
+        2, 1, 3  // 第二个三角形
     };
 
     // 使用一个顶点缓冲对象将顶点数据拷贝至缓冲中
@@ -116,6 +123,12 @@ int main()
     unsigned int vArrayObj;
     glGenVertexArrays(1, &vArrayObj);
     glBindVertexArray(vArrayObj);
+
+    // 使用索引缓冲对象将索引数据拷贝至缓冲中
+    unsigned int eleBufferObj;
+    glGenBuffers(1, &eleBufferObj);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eleBufferObj);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     /**
      * 设置顶点属性
@@ -139,7 +152,8 @@ int main()
 
         glUseProgram(shaderProgram);
         glBindVertexArray(vArrayObj);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        // 绘制6个顶点
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -147,6 +161,7 @@ int main()
 
     glDeleteVertexArrays(1, &vArrayObj);
     glDeleteBuffers(1, &vBufferObj);
+    glDeleteBuffers(1, &eleBufferObj);
 
     glfwTerminate();
 
