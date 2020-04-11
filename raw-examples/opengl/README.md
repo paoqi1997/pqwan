@@ -33,3 +33,17 @@ if (WIN32)
     add_library (glad STATIC ${SRCS} ${INC_GLAD} ${INC_KHR})
 endif ()
 ```
+
+## 命令行编译sln工程
+
+如果安装的是Visual Studio 2019，并且是默认安装，那么请给以下路径设置环境变量：
+
+```
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE
+```
+
+执行以下命令即可。
+
+```
+>devenv xxx.sln /build "Debug|x64"
+```
