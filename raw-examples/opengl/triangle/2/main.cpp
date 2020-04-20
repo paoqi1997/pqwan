@@ -14,16 +14,20 @@ void processInput(GLFWwindow *window);
 
 const char *vertexShaderSource = "#version 440 core\n"
     "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aColor;\n"
+    "out vec3 ourColor;\n"
     "void main()\n"
     "{\n"
-    "gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "gl_Position = vec4(aPos, 1.0);\n"
+    "ourColor = aColor;\n"
     "}\0";
 
 const char *fragmentShaderSource = "#version 440 core\n"
     "out vec4 FragColor;\n"
+    "in vec3 ourColor;\n"
     "void main()\n"
     "{\n"
-    "FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "FragColor = vec4(ourColor, 1.0f);\n"
     "}\0";
 
 int main()
@@ -95,9 +99,10 @@ int main()
      * 0 + + + 2
      */
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f, // 0
-         0.0f,  0.5f, 0.0f, // 1
-         0.5f, -0.5f, 0.0f  // 2
+        // positions        // colors
+        -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // 0
+         0.0f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // 1
+         0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // 2
     };
 
     // 使用一个顶点缓冲对象将顶点数据拷贝至缓冲中
@@ -121,14 +126,16 @@ int main()
      * 0: 位置值为0，vertexShader中的location = 0
      * 3: 顶点属性是一个vec3，由3个值组成
      * GL_FLOAT: 数据类型为float
-     * 3 * sizeof(float): 连续的顶点属性组之间的间隔
+     * GL_FALSE: 是否希望数据被标准化
+     * 6 * sizeof(float): 连续的顶点属性组之间的间隔
      * (void*)0: 位置数据在缓冲中相对起始位置的偏移量
      */
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), static_cast<void*>(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), static_cast<void*>(0));
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    glUseProgram(shaderProgram);
 
     // 渲染循环
     while (!glfwWindowShouldClose(window)) {
@@ -137,7 +144,6 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
         glBindVertexArray(vArrayObj);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
