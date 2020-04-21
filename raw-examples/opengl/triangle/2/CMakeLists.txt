@@ -4,7 +4,7 @@ project (triangle)
 include_directories (../../3rd-party/include)
 link_directories (../../3rd-party/lib)
 
-set (LIBS glad glfw3 opengl32)
+set (LIBS util glad glfw3 opengl32)
 set (SRCS main.cpp)
 
 if (WIN32)

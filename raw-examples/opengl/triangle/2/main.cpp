@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <util.h>
 
 #define BUFSIZE 1024
 
@@ -11,24 +12,6 @@ using namespace std;
 void frameBufferSizeCB(GLFWwindow *window, int width, int height);
 // 处理输入
 void processInput(GLFWwindow *window);
-
-const char *vertexShaderSource = "#version 440 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec3 aColor;\n"
-    "out vec3 ourColor;\n"
-    "void main()\n"
-    "{\n"
-    "gl_Position = vec4(aPos, 1.0);\n"
-    "ourColor = aColor;\n"
-    "}\0";
-
-const char *fragmentShaderSource = "#version 440 core\n"
-    "out vec4 FragColor;\n"
-    "in vec3 ourColor;\n"
-    "void main()\n"
-    "{\n"
-    "FragColor = vec4(ourColor, 1.0f);\n"
-    "}\0";
 
 int main()
 {
@@ -58,7 +41,9 @@ int main()
 
     // 顶点着色器
     int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
+    pqwan::File oVertFile("shader.vert");
+    const char *src = oVertFile.getFileContent().c_str();
+    glShaderSource(vertexShader, 1, &src, nullptr);
     glCompileShader(vertexShader);
 
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &flag);
@@ -69,7 +54,9 @@ int main()
 
     // 片元着色器
     int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
+    pqwan::File oFragFile("shader.frag");
+    src = oFragFile.getFileContent().c_str();
+    glShaderSource(fragmentShader, 1, &src, nullptr);
     glCompileShader(fragmentShader);
 
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &flag);
