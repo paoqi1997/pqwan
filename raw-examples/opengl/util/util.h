@@ -12,7 +12,7 @@ class File
 public:
     File(const char *sFileName, std::ios_base::openmode mode = std::ios_base::in);
     ~File();
-    const std::string& getFileContent() const { return fileContent; }
+    const char* getFileContent() const { return fileContent.c_str(); }
 private:
     std::ifstream is;
     std::string fileContent;

@@ -38,12 +38,13 @@ int main()
 
     int flag;
     char infoLog[BUFSIZE];
+    const char *shaderSource;
 
     // 顶点着色器
     int vertexShader = glCreateShader(GL_VERTEX_SHADER);
     pqwan::File oVertFile("shader.vert");
-    const char *src = oVertFile.getFileContent().c_str();
-    glShaderSource(vertexShader, 1, &src, nullptr);
+    shaderSource = oVertFile.getFileContent();
+    glShaderSource(vertexShader, 1, &shaderSource, nullptr);
     glCompileShader(vertexShader);
 
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &flag);
@@ -55,8 +56,8 @@ int main()
     // 片元着色器
     int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     pqwan::File oFragFile("shader.frag");
-    src = oFragFile.getFileContent().c_str();
-    glShaderSource(fragmentShader, 1, &src, nullptr);
+    shaderSource = oFragFile.getFileContent();
+    glShaderSource(fragmentShader, 1, &shaderSource, nullptr);
     glCompileShader(fragmentShader);
 
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &flag);
