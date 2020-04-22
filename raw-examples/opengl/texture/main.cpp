@@ -201,6 +201,7 @@ int main()
     stbi_image_free(data);
 
     glUseProgram(shaderProgram);
+    // 告诉OpenGL哪个采样器对应哪个纹理单元
     glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
     glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
 
