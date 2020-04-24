@@ -11,6 +11,6 @@ int main()
 
     cout << oFile.getFileContent() << endl;
 
-    std::system("pause");
+    system("pause");
     return 0;
 }
