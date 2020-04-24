@@ -132,7 +132,7 @@ int main()
      * 3: 顶点属性是一个vec3，由3个值组成
      * GL_FLOAT: 数据类型为float
      * GL_FALSE: 是否希望数据被标准化
-     * 3 * sizeof(float): 连续的顶点属性组之间的间隔
+     * 8 * sizeof(float): 连续的顶点属性组之间的间隔
      * (void*)0: 位置数据在缓冲中相对起始位置的偏移量
      */
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), static_cast<void*>(0));
@@ -163,13 +163,13 @@ int main()
     if (data) {
         /**
          * GL_TEXTURE_2D: 目标纹理
-         * 0: 详细程度编号，级别n表示多级渐远纹理/缩小贴图的级别，其中0表示基本图像级别...Level n is the nth mipmap reduction image.
+         * 0: 详细级别编号，级别n表示多级渐远纹理/缩小贴图的级别，其中0表示基本图像级别...Level n is the nth mipmap reduction image.
          * GL_RGB: 指定纹理中的颜色组件，或者说以何种格式储存纹理
          * iWidth: 纹理宽度
          * iHeight: 纹理高度
          * 0: 必须为0
-         * GL_RGB: data所指向的数据格式
-         * GL_UNSIGNED_BYTE: data所指向的数据类型
+         * GL_RGB: 指定像素数据的格式
+         * GL_UNSIGNED_BYTE: 指定像素数据的数据类型
          * data: 数据
          */
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, iWidth, iHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -202,8 +202,8 @@ int main()
 
     glUseProgram(shaderProgram);
     // 告诉OpenGL哪个采样器对应哪个纹理单元
-    glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
-    glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1);
+    glUniform1i(glGetUniformLocation(shaderProgram, "sampler1"), 1);
+    glUniform1i(glGetUniformLocation(shaderProgram, "sampler2"), 2);
 
     // 渲染循环
     while (!glfwWindowShouldClose(window)) {
@@ -212,9 +212,9 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
         glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
         glBindVertexArray(vArrayObj);
