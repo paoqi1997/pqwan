@@ -10,6 +10,6 @@ source_group ("include" FILES ${UTIL_INCS})
 source_group ("test" FILES ${TEST})
 
 if (WIN32)
-    add_executable (app ${TEST} ${UTIL_SRCS})
+    add_executable (app ${TEST} ${UTIL_SRCS} ${UTIL_INCS})
     add_library (util STATIC ${UTIL_SRCS} ${UTIL_INCS})
 endif ()
