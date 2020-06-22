@@ -42,8 +42,17 @@ endif ()
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE
 ```
 
-执行以下命令即可。
+通过CMake建立sln工程。
 
 ```
->devenv xxx.sln /build "Debug|x64"
+# 32位工程
+>cmake -S . -B build -G "Visual Studio 16 2019" -A Win32
+# 64位工程
+>cmake -S . -B build -G "Visual Studio 16 2019" -A x64
+```
+
+编译sln工程。
+
+```
+>devenv xxx.sln /build Debug
 ```
