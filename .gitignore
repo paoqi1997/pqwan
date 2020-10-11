@@ -32,7 +32,7 @@
 *.app
 
 # 3rd party libraries for OpenGL
-raw-examples/opengl/3rd-party
+raw-examples/learnopengl/3rd-party
 
 # Output directories
 build

@@ -1,10 +1,10 @@
 cmake_minimum_required (VERSION 3.4)
-project (texture)
+project (rectangle)
 
-include_directories (../3rd-party/include)
-link_directories (../3rd-party/lib)
+include_directories (../../3rd-party/include)
+link_directories (../../3rd-party/lib)
 
-set (LIBS util glad glfw3 opengl32)
+set (LIBS glad glfw3 opengl32)
 set (SRCS main.cpp)
 
 if (WIN32)
