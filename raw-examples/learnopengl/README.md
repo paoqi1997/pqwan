@@ -1,13 +1,40 @@
-# Configure 3rd party libraries for OpenGL
+# Learn OpenGL
 
-本篇内容提炼自 LearnOpenGL CN 的入门部分的 [创建窗口](https://learnopengl-cn.github.io/01%20Getting%20started/02%20Creating%20a%20window/) 章节，
+学习OpenGL。
+
+## 目录结构
+
+详情如下所示：
+
+```
+-- 3rd-party
+   |
+   |-- include
+       |
+       |-- glad
+       |-- GLFW
+       |-- ...
+   |-- lib
+-- assets
+-- introduction # 入门章节
+   |
+   |-- rectangle # 矩形
+   |-- texture   # 纹理
+   |-- ...
+-- util
+-- README.md
+```
+
+## Configure 3rd party libraries for OpenGL
+
+以下内容提炼自 LearnOpenGL CN 的入门部分的 [创建窗口](https://learnopengl-cn.github.io/01%20Getting%20started/02%20Creating%20a%20window/) 章节，
 原版英文教程的对应章节在[这里](https://learnopengl.com/Getting-started/Creating-a-window)。
 
-## [GLFW](https://www.glfw.org)
+### [GLFW](https://www.glfw.org)
 
 通过CMake构建GLFW。
 
-## [GLAD](https://glad.dav1d.de)
+### [GLAD](https://glad.dav1d.de)
 
 API.gl选择4.4，Profile选择Core，点击Generate按钮来生成库文件。
 
@@ -34,7 +61,27 @@ if (WIN32)
 endif ()
 ```
 
-## 命令行编译sln工程
+### [stb_image.h](https://github.com/nothings/stb)
+
+直接包含该头文件即可。
+
+```
+$ curl -O https://raw.githubusercontent.com/nothings/stb/master/stb_image.h
+```
+
+### [GLM](https://github.com/g-truc/glm)
+
+直接包含所需的头文件即可。
+
+```
+$ curl -O https://github.com/g-truc/glm/releases/download/0.9.9.8/glm-0.9.9.8.zip
+```
+
+## Tips
+
+一些有用的小技巧。
+
+### 命令行编译sln工程
 
 如果安装的是Visual Studio 2019，并且是默认安装，那么请给以下路径设置环境变量：
 
