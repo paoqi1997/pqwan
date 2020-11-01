@@ -16,7 +16,7 @@
        |-- ...
    |-- lib
 -- assets
--- introduction # 入门章节
+-- introduction  # 入门部分
    |
    |-- rectangle # 矩形
    |-- texture   # 纹理
@@ -25,9 +25,22 @@
 -- README.md
 ```
 
+## 部署本地文档
+
+获得 [LearnOpenGL-CN](https://github.com/LearnOpenGL-CN/LearnOpenGL-CN) 的 repo 后执行以下命令：
+
+```
+# 需要安装mkdocs
+>pip install -i https://pypi.tuna.tsinghua.edu.cn/simple mkdocs
+
+# 在 LearnOpenGL-CN-new-theme 目录执行
+>python setup.py install
+>mkdocs build
+```
+
 ## Configure 3rd party libraries for OpenGL
 
-以下内容提炼自 LearnOpenGL CN 的入门部分的 [创建窗口](https://learnopengl-cn.github.io/01%20Getting%20started/02%20Creating%20a%20window/) 章节，
+以下内容提炼自 LearnOpenGL CN 入门部分的 [创建窗口](https://learnopengl-cn.github.io/01%20Getting%20started/02%20Creating%20a%20window/) 章节，
 原版英文教程的对应章节在[这里](https://learnopengl.com/Getting-started/Creating-a-window)。
 
 ### [GLFW](https://www.glfw.org)
@@ -61,12 +74,12 @@ if (WIN32)
 endif ()
 ```
 
-### [stb_image.h](https://github.com/nothings/stb)
+### [stb](https://github.com/nothings/stb)
 
 直接包含该头文件即可。
 
 ```
-$ curl -O https://raw.githubusercontent.com/nothings/stb/master/stb_image.h
+>curl -O https://raw.githubusercontent.com/nothings/stb/master/stb_image.h
 ```
 
 ### [GLM](https://github.com/g-truc/glm)
@@ -74,7 +87,7 @@ $ curl -O https://raw.githubusercontent.com/nothings/stb/master/stb_image.h
 直接包含所需的头文件即可。
 
 ```
-$ curl -O https://github.com/g-truc/glm/releases/download/0.9.9.8/glm-0.9.9.8.zip
+>curl -O https://github.com/g-truc/glm/releases/download/0.9.9.8/glm-0.9.9.8.zip
 ```
 
 ## Tips
