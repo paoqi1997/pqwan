@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.4)
 project(simd)
 
+add_compile_options(-g)
+
 file(GLOB SRCS *.cpp)
 file(GLOB INCS *.h)
 
