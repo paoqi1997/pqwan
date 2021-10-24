@@ -30,7 +30,7 @@
 获得 [LearnOpenGL-CN](https://github.com/LearnOpenGL-CN/LearnOpenGL-CN) 的 repo 后执行以下命令：
 
 ```
-# 需要安装mkdocs
+# 部署前需要安装 mkdocs
 >pip install -i https://pypi.tuna.tsinghua.edu.cn/simple mkdocs
 
 # 在 LearnOpenGL-CN-new-theme 目录执行
