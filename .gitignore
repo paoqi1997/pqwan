@@ -34,5 +34,9 @@
 # 3rd party libraries for OpenGL
 raw-examples/learnopengl/3rd-party
 
+# Lua 5.4.*
+raw-examples/CppWithLua/lua-5.4.*
+
 # Output directories
 build
+.xmake
