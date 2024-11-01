@@ -2,69 +2,11 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "C/C++: cl.exe 生成活动文件",
-            "command": "cl.exe",
-            "args": [
-                "/Zi",
-                "/EHsc",
-                "/nologo",
-                "/Fe${workspaceFolder}\\output\\main.exe",
-                // https://code.visualstudio.com/docs/cpp/config-msvc#_modifying-tasksjson
-                "${workspaceFolder}/raw-examples/cpp11/ringbuffer/*.cpp"
-            ],
+            "label": "Build Lua src",
+            "command": "xmake f -m debug -o ${workspaceFolder}/raw-examples/CppWithLua/xbuild-lua && xmake",
             "options": {
-                "cwd": "${workspaceFolder}\\output"
-            },
-            "problemMatcher": [
-                "$msCompile"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "detail": "调试器生成的任务。"
-        },
-        {
-            "type": "shell",
-            "label": "CMake generate",
-            "command": "cmake -S ${workspaceFolder}/raw-examples/cpp11/lockFreeQueue/spsc -B ${workspaceFolder}/build"
-        },
-        {
-            "type": "shell",
-            "label": "CMake build",
-            "command": "cmake --build ${workspaceFolder}/build"
-        },
-        {
-            "label": "CMake run",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "CMake generate",
-                "CMake build"
-            ]
-        },
-        {
-            "type": "shell",
-            "label": "xmake config",
-            "command": "xmake f -m debug -o ${workspaceFolder}/xbuild",
-            "options": {
-                "cwd": "${workspaceFolder}/raw-examples/cpp11/lockFreeQueue/mpmc"
+                "cwd": "${workspaceFolder}/raw-examples/CppWithLua/lua54"
             }
-        },
-        {
-            "type": "shell",
-            "label": "xmake build",
-            "command": "xmake",
-            "options": {
-                "cwd": "${workspaceFolder}/raw-examples/cpp11/lockFreeQueue/mpmc"
-            }
-        },
-        {
-            "label": "xmake run",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "xmake config",
-                "xmake build"
-            ]
         }
     ],
     "version": "2.0.0",
