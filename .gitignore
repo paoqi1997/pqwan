@@ -40,3 +40,5 @@ raw-examples/CppWithLua/lua-5.4.*
 # Output directories
 build
 .xmake
+xbuild
+xbuild-*
