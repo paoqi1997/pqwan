@@ -2,8 +2,10 @@
     "configurations": [
         {
             "name": "Win32",
+            "intelliSenseMode": "windows-msvc-x64",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/raw-examples/CppWithLua/lua-5.4.7/src",
+                "${workspaceFolder}/raw-examples/CppWithLua/lua54"
             ],
             "defines": [
                 "_DEBUG",
