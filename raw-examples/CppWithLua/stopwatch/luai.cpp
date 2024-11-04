@@ -72,12 +72,14 @@ void LuaEnv::addModules()
 
     for (luaL_Reg *mod = mods; mod->func != nullptr; ++mod) {
         luaL_requiref(L, mod->name, mod->func, 1);
+        // 设置栈顶，即修改栈中元素的数量，为0表示清空栈
         lua_settop(L, 0);
     }
 }
 
 bool LuaEnv::runScript()
 {
+    // 与 launch.json 的 cwd 相关
     return luaL_dofile(L, "main.lua") == LUA_OK;
 }
 
@@ -89,6 +91,10 @@ void Stopwatch::onClock(Clock *clock)
     lua_getglobal(L, funcName);
 
     if (lua_isfunction(L, -1)) {
+        // (L, n, r, f) -> (L, nargs, nresults, errfunc)
+        // n: nargs    - 传入参数个数
+        // r: nresults - 返回结果个数
+        // f: errfunc  - 错误处理函数在栈中的索引
         lua_pcall(L, 0, 0, 0);
     }
 }

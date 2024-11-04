@@ -1,4 +1,5 @@
 #include <chrono>
+#include <iostream>
 #include <thread>
 
 #include "luai.h"
@@ -6,7 +7,12 @@
 
 int main()
 {
-    LuaEnv::getInstance()->run();
+    bool runSucc = LuaEnv::getInstance()->run();
+
+    if (!runSucc) {
+        std::cout << "LuaEnv::run failed." << std::endl;
+        return 1;
+    }
 
     Stopwatch *stopwatch = Stopwatch::getInstance();
 
