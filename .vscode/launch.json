@@ -12,6 +12,13 @@
             "console": "integratedTerminal",
             "preLaunchTask": "stopwatch: xmake build",
             "postDebugTask": "stopwatch: xmake clean"
+        },
+        {
+            "name": "Debug gameLogic",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}\\raw-examples\\game-backend\\gameLogic"
         }
     ],
     "version": "2.0.0"
