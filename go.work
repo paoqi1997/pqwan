@@ -1,3 +1,7 @@
 go 1.23.2
 
-use ./raw-examples/game-backend/gameLogic
+use (
+    ./raw-examples/game-backend/db-proxy
+    ./raw-examples/game-backend/gameLogic
+    ./raw-examples/game-backend/localCache
+)
