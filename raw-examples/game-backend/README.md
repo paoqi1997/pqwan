@@ -5,7 +5,7 @@
 ```
 gameLogic-1:
 |
-|---> localCache -> db-proxy -> mongodb-cluster
+|--- UNIX domain sockets ---> localCache --- rpc ---> db-proxy -> mongodb-cluster
 |
 |---> gameHub -> gameLogic-2
 |
