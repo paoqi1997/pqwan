@@ -7,7 +7,7 @@ import (
 
     "google.golang.org/grpc"
 
-    pb "db-proxy/protos"
+    pb "pprotos"
 )
 
 const (

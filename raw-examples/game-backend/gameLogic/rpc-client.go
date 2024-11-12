@@ -8,7 +8,7 @@ import (
     "google.golang.org/grpc"
     "google.golang.org/grpc/credentials/insecure"
 
-    pb "db-proxy/protos"
+    pb "pprotos"
 )
 
 type Client struct {

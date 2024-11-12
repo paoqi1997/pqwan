@@ -4,4 +4,5 @@ use (
     ./raw-examples/game-backend/db-proxy
     ./raw-examples/game-backend/gameLogic
     ./raw-examples/game-backend/localCache
+    ./raw-examples/game-backend/pprotos
 )

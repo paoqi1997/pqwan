@@ -2,7 +2,7 @@
 
 syntax = "proto3";
 
-option go_package = "paoqi/game-backend/protos";
+option go_package = "paoqi/game-backend/pprotos";
 
 package paoqi.hello;
 

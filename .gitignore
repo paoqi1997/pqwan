@@ -43,4 +43,4 @@ build
 .xmake
 xbuild
 xbuild-*
-raw-examples/game-backend/protos/protos
+raw-examples/game-backend/protos/pprotos

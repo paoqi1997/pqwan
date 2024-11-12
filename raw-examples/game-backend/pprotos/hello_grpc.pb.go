@@ -6,7 +6,7 @@
 // - protoc             v5.28.3
 // source: hello.proto
 
-package protos
+package pprotos
 
 import (
 	context "context"

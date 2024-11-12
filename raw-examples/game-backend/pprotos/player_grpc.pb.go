@@ -4,7 +4,7 @@
 // - protoc             v5.28.3
 // source: player.proto
 
-package protos
+package pprotos
 
 import (
 	context "context"
