@@ -12,7 +12,12 @@ import (
 )
 
 const (
-    G_Sock string = "/tmp/local-cache.sock"
+    G_Sock     string = "/tmp/local-cache.sock"
+    G_RPC_Port uint32 = 10032
+)
+
+var (
+    G_RPC *Client
 )
 
 func OnRead(conn net.Conn) {
@@ -45,6 +50,8 @@ func OnExit() {
 
         fmt.Println("Exited.")
 
+        G_RPC.Close()
+
         os.Exit(0)
     }(ch)
 }
@@ -58,6 +65,10 @@ func main() {
     }
 
     defer conn.Close()
+
+    G_RPC = NewClient(G_RPC_Port)
+    prefix := "hello:"
+    inputIndex := len(prefix)
 
     OnExit()
 
@@ -74,6 +85,12 @@ func main() {
         }
 
         line = strings.TrimRight(line, "\r\n")
+
+        if strings.HasPrefix(line, prefix) {
+            _, msg := G_RPC.SayHello(line[inputIndex:])
+            fmt.Printf("SayHello: %s\n", msg)
+            continue
+        }
 
         _, err = conn.Write([]byte(line))
 
