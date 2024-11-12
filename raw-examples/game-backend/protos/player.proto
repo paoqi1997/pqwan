@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "paoqi/game-backend/protos";
+
+package paoqi.player;
+
+service Player {
+  rpc GetName (GetNameRequest) returns (GetNameReply) {}
+}
+
+message GetNameRequest {
+  string playerID = 1;
+}
+
+message GetNameReply {
+  int32 statusCode = 1;
+  string name = 2;
+}

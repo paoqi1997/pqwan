@@ -1,0 +1,19 @@
+// https://github.com/grpc/grpc-go/blob/master/examples/helloworld/helloworld/helloworld.proto
+
+syntax = "proto3";
+
+option go_package = "paoqi/game-backend/protos";
+
+package paoqi.hello;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
