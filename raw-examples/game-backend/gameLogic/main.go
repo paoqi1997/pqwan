@@ -25,7 +25,7 @@ func OnRead(conn net.Conn) {
     buffer := make([]byte, size)
 
     for {
-        _, err := conn.Read(buffer)
+        nBytes, err := conn.Read(buffer)
 
         if err != nil {
             if err == io.EOF {
@@ -37,6 +37,10 @@ func OnRead(conn net.Conn) {
 
             break
         }
+
+        msg := string(buffer[:nBytes])
+
+        fmt.Printf("Reply: [%s]\n", msg)
     }
 }
 

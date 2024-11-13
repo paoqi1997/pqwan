@@ -6,7 +6,10 @@ import (
     "net"
     "os"
     "os/signal"
+    "strings"
     "syscall"
+
+    "github.com/dgraph-io/ristretto/v2"
 )
 
 const (
@@ -15,6 +18,7 @@ const (
 
 var (
     G_Counter uint32 = 0
+    G_Cache   *ristretto.Cache[string, string]
 )
 
 func OnAccept(conn net.Conn, connID uint32) {
@@ -39,6 +43,32 @@ func OnAccept(conn net.Conn, connID uint32) {
         msg := string(buffer[:nBytes])
 
         fmt.Printf("Connection %s/%d: %s\n", conn.RemoteAddr().String(), connID, msg)
+
+        cacheGetPrefix := "c:g:"
+        cacheSetPrefix := "c:s:"
+
+        if strings.HasPrefix(msg, cacheGetPrefix) {
+            keyIndex := len(cacheGetPrefix)
+            key := msg[keyIndex:]
+
+            fmt.Printf("Get key:<%s>\n", key)
+
+            value, _ := G_Cache.Get(key)
+            output := fmt.Sprintf("value:%s", value)
+
+            _, _ = conn.Write([]byte(output))
+        } else if strings.HasPrefix(msg, cacheSetPrefix) {
+            kvIndex := len(cacheSetPrefix)
+            rawKV := msg[kvIndex:]
+            kv := strings.Split(rawKV, ":")
+            key, value := kv[0], kv[1]
+
+            fmt.Printf("Set key:<%s>/value:<%s>\n", key, value)
+
+            G_Cache.Set(key, value, 0)
+            _, _ = conn.Write([]byte("ok"))
+            G_Cache.Wait()
+        }
     }
 }
 
@@ -55,6 +85,8 @@ func OnExit() {
         if err != nil {
             fmt.Printf("os.Remove: %v\n", err)
         }
+
+        G_Cache.Close()
 
         fmt.Println("Exited.")
 
@@ -73,6 +105,16 @@ func main() {
     defer listener.Close()
 
     OnExit()
+
+    G_Cache, err = ristretto.NewCache(&ristretto.Config[string, string]{
+        NumCounters: 1e7,
+        MaxCost:     1 << 30,
+        BufferItems: 64,
+    })
+    if err != nil {
+        fmt.Printf("ristretto.NewCache: %v\n", err)
+        return
+    }
 
     for {
         conn, err := listener.Accept()
