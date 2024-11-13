@@ -13,7 +13,8 @@ import (
 
 type Client struct {
     conn *grpc.ClientConn
-    c    pb.GreeterClient
+    cg   pb.GreeterClient
+    cp   pb.PlayerClient
 }
 
 func NewClient(port uint32) *Client {
@@ -28,7 +29,8 @@ func NewClient(port uint32) *Client {
 
     return &Client{
         conn: conn,
-        c:    pb.NewGreeterClient(conn),
+        cg:   pb.NewGreeterClient(conn),
+        cp:   pb.NewPlayerClient(conn),
     }
 }
 
@@ -41,7 +43,7 @@ func (cli *Client) SayHello(name string) (bool, string) {
 
     defer cancel()
 
-    r, err := cli.c.SayHello(ctx, &pb.HelloRequest{ Name: name })
+    r, err := cli.cg.SayHello(ctx, &pb.HelloRequest{ Name: name })
     if err != nil {
         msg := fmt.Sprintf("SayHelloError: %v", err)
         fmt.Println(msg)
@@ -49,4 +51,34 @@ func (cli *Client) SayHello(name string) (bool, string) {
     }
 
     return true, r.GetMessage()
+}
+
+func (cli *Client) GetName(playerID string) (bool, string) {
+    ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+
+    defer cancel()
+
+    r, err := cli.cp.GetName(ctx, &pb.GetNameRequest{ PlayerID: playerID })
+    if err != nil {
+        msg := fmt.Sprintf("GetNameError: %v", err)
+        fmt.Println(msg)
+        return false, msg
+    }
+
+    return true, r.GetName()
+}
+
+func (cli *Client) SetName(playerID, name string) (bool, int32) {
+    ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+
+    defer cancel()
+
+    r, err := cli.cp.SetName(ctx, &pb.SetNameRequest{ PlayerID: playerID, Name: name })
+    if err != nil {
+        msg := fmt.Sprintf("SetNameError: %v", err)
+        fmt.Println(msg)
+        return false, 1
+    }
+
+    return true, r.GetStatusCode()
 }

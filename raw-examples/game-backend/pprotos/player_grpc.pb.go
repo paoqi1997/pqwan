@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	Player_GetName_FullMethodName = "/paoqi.player.Player/GetName"
+	Player_SetName_FullMethodName = "/paoqi.player.Player/SetName"
 )
 
 // PlayerClient is the client API for Player service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PlayerClient interface {
 	GetName(ctx context.Context, in *GetNameRequest, opts ...grpc.CallOption) (*GetNameReply, error)
+	SetName(ctx context.Context, in *SetNameRequest, opts ...grpc.CallOption) (*SetNameReply, error)
 }
 
 type playerClient struct {
@@ -47,11 +49,22 @@ func (c *playerClient) GetName(ctx context.Context, in *GetNameRequest, opts ...
 	return out, nil
 }
 
+func (c *playerClient) SetName(ctx context.Context, in *SetNameRequest, opts ...grpc.CallOption) (*SetNameReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SetNameReply)
+	err := c.cc.Invoke(ctx, Player_SetName_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PlayerServer is the server API for Player service.
 // All implementations must embed UnimplementedPlayerServer
 // for forward compatibility.
 type PlayerServer interface {
 	GetName(context.Context, *GetNameRequest) (*GetNameReply, error)
+	SetName(context.Context, *SetNameRequest) (*SetNameReply, error)
 	mustEmbedUnimplementedPlayerServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedPlayerServer struct{}
 
 func (UnimplementedPlayerServer) GetName(context.Context, *GetNameRequest) (*GetNameReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetName not implemented")
+}
+func (UnimplementedPlayerServer) SetName(context.Context, *SetNameRequest) (*SetNameReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetName not implemented")
 }
 func (UnimplementedPlayerServer) mustEmbedUnimplementedPlayerServer() {}
 func (UnimplementedPlayerServer) testEmbeddedByValue()                {}
@@ -104,6 +120,24 @@ func _Player_GetName_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Player_SetName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetNameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlayerServer).SetName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Player_SetName_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlayerServer).SetName(ctx, req.(*SetNameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Player_ServiceDesc is the grpc.ServiceDesc for Player service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var Player_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetName",
 			Handler:    _Player_GetName_Handler,
+		},
+		{
+			MethodName: "SetName",
+			Handler:    _Player_SetName_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

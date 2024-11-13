@@ -6,6 +6,7 @@ package paoqi.player;
 
 service Player {
   rpc GetName (GetNameRequest) returns (GetNameReply) {}
+  rpc SetName (SetNameRequest) returns (SetNameReply) {}
 }
 
 message GetNameRequest {
@@ -15,4 +16,13 @@ message GetNameRequest {
 message GetNameReply {
   int32 statusCode = 1;
   string name = 2;
+}
+
+message SetNameRequest {
+  string playerID = 1;
+  string name = 2;
+}
+
+message SetNameReply {
+  int32 statusCode = 1;
 }
