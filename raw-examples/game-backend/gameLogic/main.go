@@ -40,7 +40,7 @@ func OnRead(conn net.Conn) {
 
         msg := string(buffer[:nBytes])
 
-        fmt.Printf("Reply: [%s]\n", msg)
+        fmt.Printf("[OnRead] reply: [%s]\n", msg)
     }
 }
 
@@ -51,21 +51,21 @@ func OnInput(line string) bool {
 
     if strings.HasPrefix(line, helloPrefix) {
         helloMsgIndex := len(helloPrefix)
-        _, msg := G_RPC.SayHello(line[helloMsgIndex:])
-        fmt.Printf("SayHello: %s\n", msg)
+        msg := G_RPC.SayHello(line[helloMsgIndex:])
+        fmt.Printf("[OnInput] SayHello: %s\n", msg)
         return true
     } else if strings.HasPrefix(line, mongoGetPrefix) {
         mongoGetIndex := len(mongoGetPrefix)
         playerID := line[mongoGetIndex:]
-        _, playerName := G_RPC.GetName(playerID)
-        fmt.Printf("GetName: <%s>\n", playerName)
+        playerName := G_RPC.GetName(playerID)
+        fmt.Printf("[OnInput] GetName: <%s>\n", playerName)
         return true
     } else if strings.HasPrefix(line, mongoUpdatePrefix) {
         mongoUpdateIndex := len(mongoUpdatePrefix)
         IDAndName := strings.Split(line[mongoUpdateIndex:], ":")
         playerID, playerName := IDAndName[0], IDAndName[1]
-        _, statusCode := G_RPC.SetName(playerID, playerName)
-        fmt.Printf("SetName: %d\n", statusCode)
+        statusCode := G_RPC.SetName(playerID, playerName)
+        fmt.Printf("[OnInput] SetName: %d\n", statusCode)
         return true
     }
 

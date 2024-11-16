@@ -23,7 +23,7 @@ func NewClient(port uint32) *Client {
         grpc.WithTransportCredentials(insecure.NewCredentials()),
     )
     if err != nil {
-        fmt.Printf("grpc.NewClient: %v\n", err)
+        fmt.Printf("[NewClient][grpc.NewClient] err: %v\n", err)
         return nil
     }
 
@@ -38,47 +38,47 @@ func (cli *Client) Close() {
     cli.conn.Close()
 }
 
-func (cli *Client) SayHello(name string) (bool, string) {
+func (cli *Client) SayHello(name string) string {
     ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 
     defer cancel()
 
     r, err := cli.cg.SayHello(ctx, &pb.HelloRequest{ Name: name })
     if err != nil {
-        msg := fmt.Sprintf("SayHelloError: %v", err)
+        msg := fmt.Sprintf("[Client][SayHello] err: %v", err)
         fmt.Println(msg)
-        return false, msg
+        return msg
     }
 
-    return true, r.GetMessage()
+    return r.GetMessage()
 }
 
-func (cli *Client) GetName(playerID string) (bool, string) {
+func (cli *Client) GetName(playerID string) string {
     ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 
     defer cancel()
 
     r, err := cli.cp.GetName(ctx, &pb.GetNameRequest{ PlayerID: playerID })
     if err != nil {
-        msg := fmt.Sprintf("GetNameError: %v", err)
+        msg := fmt.Sprintf("[Client][GetName] err: %v", err)
         fmt.Println(msg)
-        return false, msg
+        return msg
     }
 
-    return true, r.GetName()
+    return r.GetName()
 }
 
-func (cli *Client) SetName(playerID, name string) (bool, int32) {
+func (cli *Client) SetName(playerID, name string) int32 {
     ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 
     defer cancel()
 
     r, err := cli.cp.SetName(ctx, &pb.SetNameRequest{ PlayerID: playerID, Name: name })
     if err != nil {
-        msg := fmt.Sprintf("SetNameError: %v", err)
+        msg := fmt.Sprintf("[Client][SetName] err: %v", err)
         fmt.Println(msg)
-        return false, 1
+        return -1
     }
 
-    return true, r.GetStatusCode()
+    return r.GetStatusCode()
 }

@@ -28,7 +28,7 @@ type GreeterServer struct {
 func (s *GreeterServer) SayHello(_ context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
     inName := in.GetName()
 
-    fmt.Printf("funcName: SayHello, param_name: %s\n", inName)
+    fmt.Printf("[GreeterServer][SayHello] name: %s\n", inName)
 
     return &pb.HelloReply{
         Message: fmt.Sprintf("Hello %s", inName),
@@ -42,12 +42,12 @@ type PlayerServer struct {
 func (s *PlayerServer) GetName(_ context.Context, in *pb.GetNameRequest) (*pb.GetNameReply, error) {
     playerID := in.GetPlayerID()
 
-    fmt.Printf("[PlayerServer] GetName <- (playerID: %s)\n", playerID)
+    fmt.Printf("[PlayerServer][GetName] playerID: %s\n", playerID)
 
     pID, err := strconv.ParseUint(playerID, 10, 32)
     if err != nil {
-        fmt.Printf("[PlayerServer] strconv.Atoi: %v\n", err)
-        return &pb.GetNameReply{ Name: "" }, err
+        fmt.Printf("[PlayerServer][GetName] strconv.ParseUint err: %v\n", err)
+        return &pb.GetNameReply{ StatusCode: 1, Name: "" }, err
     }
 
     collectionName := "players"
@@ -56,8 +56,8 @@ func (s *PlayerServer) GetName(_ context.Context, in *pb.GetNameRequest) (*pb.Ge
     var getResult map[string]interface{}
 
     if err := json.Unmarshal(jsonReply, &getResult); err != nil {
-        fmt.Printf("[PlayerServer] json.Unmarshal: %v\n", err)
-        return &pb.GetNameReply{ Name: "" }, err
+        fmt.Printf("[PlayerServer][GetName] json.Unmarshal err: %v\n", err)
+        return &pb.GetNameReply{ StatusCode: 2, Name: "" }, err
     }
 
     var name string
@@ -77,11 +77,11 @@ func (s *PlayerServer) SetName(_ context.Context, in *pb.SetNameRequest) (*pb.Se
 
     pID, err := strconv.ParseUint(playerID, 10, 32)
     if err != nil {
-        fmt.Printf("[PlayerServer] strconv.Atoi: %v\n", err)
+        fmt.Printf("[PlayerServer][SetName] strconv.ParseUint err: %v\n", err)
         return &pb.SetNameReply{ StatusCode: 1 }, err
     }
 
-    fmt.Printf("[PlayerServer] SetName <- (playerID: %s, name: %s)\n", playerID, newName)
+    fmt.Printf("[PlayerServer][SetName] playerID: %s, name: %s\n", playerID, newName)
 
     collectionName := "players"
     jsonGetReply := G_DBLayer.GetOne(collectionName, uint32(pID))
@@ -90,12 +90,12 @@ func (s *PlayerServer) SetName(_ context.Context, in *pb.SetNameRequest) (*pb.Se
         jsonData := fmt.Sprintf("{\"id\":%d,\"name\":\"%s\"}", pID, newName)
         inJsonData := []byte(jsonData)
         msg := G_DBLayer.InsertOne(collectionName, inJsonData)
-        fmt.Printf("[PlayerServer] InsertOne: %s\n", msg)
+        fmt.Printf("[PlayerServer][SetName] DBLayer.InsertOne: %s\n", msg)
     } else {
         jsonData := fmt.Sprintf("{\"name\":\"%s\"}", newName)
         inJsonData := []byte(jsonData)
         msg := G_DBLayer.UpdateOne(collectionName, uint32(pID), inJsonData)
-        fmt.Printf("[PlayerServer] UpdateOne: %s\n", msg)
+        fmt.Printf("[PlayerServer][SetName] DBLayer.UpdateOne: %s\n", msg)
     }
 
     return &pb.SetNameReply{ StatusCode: 0 }, err
@@ -104,7 +104,7 @@ func (s *PlayerServer) SetName(_ context.Context, in *pb.SetNameRequest) (*pb.Se
 func main() {
     listener, err := net.Listen("tcp", fmt.Sprintf(":%d", G_Port))
     if err != nil {
-        fmt.Printf("net.Listen: %v\n", err)
+        fmt.Printf("[main][net.Listen] err: %v\n", err)
         return
     }
 
@@ -117,6 +117,6 @@ func main() {
     pb.RegisterPlayerServer(server, &PlayerServer{})
 
     if err := server.Serve(listener); err != nil {
-        fmt.Printf("Serve: %v\n", err)
+        fmt.Printf("[main] grpc.Server.Serve err: %v\n", err)
     }
 }

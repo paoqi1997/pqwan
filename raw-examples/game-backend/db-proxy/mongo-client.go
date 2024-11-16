@@ -20,7 +20,7 @@ type DBLayer struct {
 func NewDBLayer(uri string) *DBLayer {
     client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
     if err != nil {
-        fmt.Printf("mongo.Connect: %v\n", err)
+        fmt.Printf("[NewDBLayer][mongo.Connect] err: %v\n", err)
         return nil
     }
 
@@ -49,7 +49,7 @@ func (L *DBLayer) Collection(collectionName string) *mongo.Collection {
 
 func (L *DBLayer) Disconnect() {
     if err := L.client.Disconnect(context.TODO()); err != nil {
-        fmt.Printf("Disconnect: %v\n", err)
+        fmt.Printf("[DBLayer][Disconnect] err: %v\n", err)
     }
 }
 
@@ -63,9 +63,9 @@ func (L *DBLayer) GetOne(collectionName string, id uint32) []byte {
     err := L.Collection(collectionName).FindOne(context.TODO(), paramD).Decode(&getResult)
     if err != nil {
         if err == mongo.ErrNoDocuments {
-            fmt.Printf("[DBLayer][GetOne] %s.FindOne: %d not found\n", collectionName, id)
+            fmt.Printf("[DBLayer][GetOne] %s.FindOne err: %d not found\n", collectionName, id)
         } else {
-            fmt.Printf("[DBLayer][GetOne] %s.FindOne: %v\n", collectionName, err)
+            fmt.Printf("[DBLayer][GetOne] %s.FindOne err: %v\n", collectionName, err)
         }
 
         return []byte("{}")
@@ -73,7 +73,7 @@ func (L *DBLayer) GetOne(collectionName string, id uint32) []byte {
 
     jsonData, err := json.Marshal(getResult)
     if err != nil {
-        fmt.Printf("[DBLayer][GetOne] json.Marshal: %v\n", err)
+        fmt.Printf("[DBLayer][GetOne] json.Marshal err: %v\n", err)
         return []byte("{}")
     }
 
@@ -85,13 +85,13 @@ func (L *DBLayer) InsertOne(collectionName string, inJsonData []byte) []byte {
 
     err := bson.UnmarshalExtJSON(inJsonData, true, &doc)
     if err != nil {
-        fmt.Printf("[DBLayer][InsertOne] bson.Unmarshal: %v\n", err)
+        fmt.Printf("[DBLayer][InsertOne] bson.UnmarshalExtJSON err: %v\n", err)
         return []byte("{}")
     }
 
     insertResult, err := L.Collection(collectionName).InsertOne(context.TODO(), &doc)
     if err != nil {
-        fmt.Printf("[DBLayer][InsertOne] %s.InsertOne: %v\n", collectionName, err)
+        fmt.Printf("[DBLayer][InsertOne] %s.InsertOne err: %v\n", collectionName, err)
         return []byte("{}")
     }
 
@@ -107,7 +107,7 @@ func (L *DBLayer) UpdateOne(collectionName string, id uint32, inJsonData []byte)
 
     err := json.Unmarshal(inJsonData, &inData)
     if err != nil {
-        fmt.Printf("[DBLayer][UpdateOne] json.Unmarshal: %v\n", err)
+        fmt.Printf("[DBLayer][UpdateOne] json.Unmarshal err: %v\n", err)
         return []byte("{}")
     }
 
@@ -121,7 +121,7 @@ func (L *DBLayer) UpdateOne(collectionName string, id uint32, inJsonData []byte)
 
     updateResult, err := L.Collection(collectionName).UpdateOne(context.TODO(), filter, updateExp)
     if err != nil {
-        fmt.Printf("[DBLayer][UpdateOne] %s.UpdateOne: %v\n", collectionName, err)
+        fmt.Printf("[DBLayer][UpdateOne] %s.UpdateOne err: %v\n", collectionName, err)
         return []byte("{}")
     }
 
@@ -133,7 +133,7 @@ func (L *DBLayer) UpdateOne(collectionName string, id uint32, inJsonData []byte)
 
     jsonReply, err := json.Marshal(myUpdateResult)
     if err != nil {
-        fmt.Printf("[DBLayer][UpdateOne] json.Marshal: %v\n", err)
+        fmt.Printf("[DBLayer][UpdateOne] json.Marshal err: %v\n", err)
         return []byte("{}")
     }
 
