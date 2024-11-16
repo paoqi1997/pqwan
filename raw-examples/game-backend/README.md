@@ -123,7 +123,7 @@ test> show dbs
 // pq 为游戏项目代号
 test> use pq
 
-// db.collection.xxx 的 collection 相当于表
+// db.collection.xxx 中的 collection 相当于表
 pq> db.players.insertOne(
   {
     id: 10137135,
