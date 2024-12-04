@@ -3,6 +3,9 @@ import astar
 import matplotlib.pyplot as plt
 
 from functools import partial
+from typing import List
+
+from vec2 import Vec2
 
 from matplotlib.animation import FuncAnimation
 from matplotlib.axes import Axes
@@ -37,11 +40,63 @@ def preparePlot(x_max = 31, y_max = 31, is_maze = False):
 
     return fig, ax
 
+def update(frame, context):
+    cIndex: CIndex = context['c_index_path_points']
+
+    idx = cIndex.idx
+
+    if idx >= cIndex.max_idx:
+        return
+
+    cIndex.idx += 1
+
+    ax: Axes = context['ax']
+    astarAlgo: astar.AStar = context['astar_algo']
+    path_points: List[Vec2] = context['path_points']
+
+    point = path_points[idx]
+
+    if not astarAlgo.isStartPoint(point) and not astarAlgo.isEndPoint(point):
+        fill_grid_with_color(ax, point.x, point.y, 'green')
+
+def updateWithExploredPoints(frame, context):
+    ax: Axes = context['ax']
+    cIndex1: CIndex = context['c_index_explored_points']
+    cIndex2: CIndex = context['c_index_path_points']
+    astarAlgo: astar.AStar = context['astar_algo']
+    explored_points: List[Vec2] = context['explored_points']
+    path_points: List[Vec2] = context['path_points']
+
+    idx = cIndex1.idx
+
+    if idx < cIndex1.max_idx:
+        cIndex1.idx += 1
+
+        point = explored_points[idx]
+
+        if not astarAlgo.isStartPoint(point) and not astarAlgo.isEndPoint(point):
+            fill_grid_with_color(ax, point.x, point.y, 'cyan')
+    else:
+        idx = cIndex2.idx
+
+        if idx >= cIndex2.max_idx:
+            return
+
+        cIndex2.idx += 1
+
+        point = path_points[idx]
+
+        if not astarAlgo.isStartPoint(point) and not astarAlgo.isEndPoint(point):
+            fill_grid_with_color(ax, point.x, point.y, 'green')
+
 def main():
     X = 31
     Y = 31
 
+    # 是否为随机迷宫
     is_maze = True
+    # 是否显示探索过的路径
+    with_explored_points = False
 
     fig, ax = preparePlot(X, Y, is_maze)
 
@@ -65,28 +120,17 @@ def main():
     cIndex1 = CIndex(len(explored_points))
     cIndex2 = CIndex(len(path_points))
 
-    def update(frame, cIndex1: CIndex, cIndex2: CIndex):
-        idx = cIndex1.idx
-        cIndex1.idx += 1
+    context = {
+        'ax': ax,
+        'c_index_explored_points': cIndex1,
+        'c_index_path_points': cIndex2,
+        'astar_algo': astarAlgo,
+        'explored_points': explored_points,
+        'path_points': path_points,
+    }
 
-        if idx < cIndex1.max_idx:
-            point = explored_points[idx]
-
-            if not astarAlgo.isStartPoint(point) and not astarAlgo.isEndPoint(point):
-                fill_grid_with_color(ax, point.x, point.y, 'cyan')
-        else:
-            idx = cIndex2.idx
-            cIndex2.idx += 1
-
-            if idx >= cIndex2.max_idx:
-                return
-
-            point = path_points[idx]
-
-            if not astarAlgo.isStartPoint(point) and not astarAlgo.isEndPoint(point):
-                fill_grid_with_color(ax, point.x, point.y, 'green')
-
-    anim = FuncAnimation(fig, partial(update, cIndex1=cIndex1, cIndex2=cIndex2), frames=120, interval=50)
+    updateFunc = updateWithExploredPoints if with_explored_points else update
+    anim = FuncAnimation(fig, partial(updateFunc, context=context), frames=120, interval=50)
 
     plt.show()
 
