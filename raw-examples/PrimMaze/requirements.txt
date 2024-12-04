@@ -1,0 +1,15 @@
+# https://pip.pypa.io/en/stable/reference/requirement-specifiers/
+
+# https://pypi.org/project/matplotlib/
+# https://matplotlib.org
+matplotlib
+
+# https://pypi.org/project/numpy/
+# https://numpy.org
+numpy
+
+# https://pypi.org/project/PySide6/
+# https://doc.qt.io/qtforpython-6/
+# https://wiki.qt.io/Qt_for_Python
+# https://wiki.qt.io/Qt_6.5_Release
+PySide6 == 6.5.3
