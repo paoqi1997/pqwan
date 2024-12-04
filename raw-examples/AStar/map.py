@@ -1,3 +1,9 @@
+import sys
+from os.path import dirname
+sys.path.append(dirname(dirname(__file__)))
+
+from PrimMaze import PrimMaze
+
 from typing import List
 
 from vec2 import Vec2
@@ -25,6 +31,18 @@ class Map:
             self.generateObstacles_1()
         else:
             generateFunc()
+
+    def generateFromPrimMaze(self):
+        pm = PrimMaze(self.y_max, self.x_max)
+        pm.generate()
+
+        self.start_point = Vec2(pm.start_point[1], pm.start_point[0])
+        self.end_point = Vec2(self.x_max - 2, self.y_max - 2)
+
+        for row in range(pm.row_max):
+            for col in range(pm.col_max):
+                if pm.grids[row, col] == pm.WALL:
+                    self.addPoint(col, row)
 
     def generateObstacles_1(self):
         x_left = round(self.x_max / 3)

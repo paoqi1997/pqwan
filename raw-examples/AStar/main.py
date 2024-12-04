@@ -19,14 +19,11 @@ def fill_grid_with_color(ax: Axes, x_left_bottom, y_right_bottom, color = 'black
     y2 = y_right_bottom + 1
     ax.fill_between(x_line_points, y1, y2, facecolor=color)
 
-def main():
+def preparePlot(x_max = 31, y_max = 31, is_maze = False):
     fig, ax = plt.subplots()
 
-    X = 31
-    Y = 31
-
-    plt.xlim(0, X)
-    plt.ylim(0, Y)
+    plt.xlim(0, x_max)
+    plt.ylim(0, y_max)
 
     ax.xaxis.set_major_locator(MultipleLocator(1))
     ax.yaxis.set_major_locator(MultipleLocator(1))
@@ -34,8 +31,26 @@ def main():
     ax.xaxis.grid(True, which='major')
     ax.yaxis.grid(True, which='major')
 
+    if is_maze:
+        ax.invert_yaxis()
+        ax.xaxis.tick_top()
+
+    return fig, ax
+
+def main():
+    X = 31
+    Y = 31
+
+    is_maze = True
+
+    fig, ax = preparePlot(X, Y, is_maze)
+
     map = astar.Map(X, Y)
-    map.generateObstacles()
+
+    if is_maze:
+        map.generateObstacles(map.generateFromPrimMaze)
+    else:
+        map.generateObstacles()
 
     fill_grid_with_color(ax, map.start_point.x, map.start_point.y, 'blue')
     fill_grid_with_color(ax, map.end_point.x, map.end_point.y, 'red')
@@ -43,7 +58,8 @@ def main():
     for point in map.obstacle_points:
         fill_grid_with_color(ax, point.x, point.y)
 
-    astarAlgo = astar.AStar(map)
+    diagonalMovementEnabled = False if is_maze else True
+    astarAlgo = astar.AStar(map, diagonalMovementEnabled)
     path_points, explored_points = astarAlgo.planning()
 
     cIndex1 = CIndex(len(explored_points))
