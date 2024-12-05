@@ -32,6 +32,8 @@
 
 + [VaibhavSaini19/Maze-Generator](https://github.com/VaibhavSaini19/Maze-Generator)
 
++ [ArneStenkrona/MazeFun](https://github.com/ArneStenkrona/MazeFun)
+
 + [MorvanZhou/mmaze](https://github.com/MorvanZhou/mmaze)
 
 + [We-Gold/algernon-js](https://github.com/We-Gold/algernon-js)
