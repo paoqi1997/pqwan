@@ -36,6 +36,7 @@ def show(context, draw_roads = False):
         plt.show()
         return
 
+    # 黑色表示墙壁，一开始迷宫都是墙
     ax.fill_between([0, X], 0, Y, facecolor='black')
 
     cIndex = CIndex(len(roads))
@@ -50,6 +51,7 @@ def show(context, draw_roads = False):
 
         row, col = roads[idx]
 
+        # 白色表示道路
         fill_grid_with_color(ax, col, row, 'white')
 
     anim = FuncAnimation(fig, update, frames=120, interval=50)
