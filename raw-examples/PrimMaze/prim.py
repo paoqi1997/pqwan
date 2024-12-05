@@ -48,12 +48,17 @@ class PrimMaze:
             return None
 
     def generate(self):
-        self.grids[self.start_point] = 1
+        self.grids[self.start_point] = self.ROAD
 
         self.addNeighbors(self.start_point)
 
-        while len(self.walls) > 0:
-            idx = random.randint(0, len(self.walls) - 1)
+        roads: List[Tuple[int, int]] = []
+        roads.append(self.start_point)
+
+        wallLen = len(self.walls)
+
+        while wallLen > 0:
+            idx = random.randint(0, wallLen - 1)
             wall = self.walls[idx]
 
             upNeighbor = self.getNeighbor(wall, self.UP)
@@ -64,11 +69,13 @@ class PrimMaze:
                     self.grids[wall] = self.ROAD
                     self.grids[downNeighbor] = self.ROAD
                     self.addNeighbors(downNeighbor)
+                    roads.extend([wall, downNeighbor])
 
                 if self.grids[upNeighbor] == self.WALL and self.grids[downNeighbor] == self.ROAD:
                     self.grids[upNeighbor] = self.ROAD
                     self.grids[wall] = self.ROAD
                     self.addNeighbors(upNeighbor)
+                    roads.extend([upNeighbor, wall])
 
             leftNeighbor = self.getNeighbor(wall, self.LEFT)
             rightNeighbor = self.getNeighbor(wall, self.RIGHT)
@@ -78,10 +85,16 @@ class PrimMaze:
                     self.grids[wall] = self.ROAD
                     self.grids[rightNeighbor] = self.ROAD
                     self.addNeighbors(rightNeighbor)
+                    roads.extend([wall, rightNeighbor])
 
                 if self.grids[leftNeighbor] == self.WALL and self.grids[rightNeighbor] == self.ROAD:
                     self.grids[leftNeighbor] = self.ROAD
                     self.grids[wall] = self.ROAD
                     self.addNeighbors(leftNeighbor)
+                    roads.extend([leftNeighbor, wall])
 
             self.walls.remove(wall)
+
+            wallLen = len(self.walls)
+
+        return roads
