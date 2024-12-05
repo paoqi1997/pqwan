@@ -4,6 +4,10 @@
 # https://matplotlib.org
 matplotlib
 
+# https://pypi.org/project/numpy/
+# https://numpy.org
+numpy
+
 # https://pypi.org/project/PySide6/
 # https://doc.qt.io/qtforpython-6/
 # https://wiki.qt.io/Qt_for_Python
