@@ -19,6 +19,13 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}\\raw-examples\\game-backend\\gameLogic"
+        },
+        {
+            "name": "Debug Python",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}\\raw-examples\\AStar\\main.py",
+            "console": "integratedTerminal"
         }
     ],
     "version": "2.0.0"
