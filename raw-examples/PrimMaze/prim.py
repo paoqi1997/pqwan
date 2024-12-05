@@ -75,7 +75,7 @@ class PrimMaze:
                     self.grids[upNeighbor] = self.ROAD
                     self.grids[wall] = self.ROAD
                     self.addNeighbors(upNeighbor)
-                    roads.extend([upNeighbor, wall])
+                    roads.extend([wall, upNeighbor])
 
             leftNeighbor = self.getNeighbor(wall, self.LEFT)
             rightNeighbor = self.getNeighbor(wall, self.RIGHT)
@@ -91,7 +91,7 @@ class PrimMaze:
                     self.grids[leftNeighbor] = self.ROAD
                     self.grids[wall] = self.ROAD
                     self.addNeighbors(leftNeighbor)
-                    roads.extend([leftNeighbor, wall])
+                    roads.extend([wall, leftNeighbor])
 
             self.walls.remove(wall)
 
