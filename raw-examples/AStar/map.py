@@ -8,6 +8,10 @@ from typing import List
 
 from vec2 import Vec2
 
+def isEvenNumber(x: int):
+    '''是否为偶数'''
+    return x % 2 == 0
+
 class Map:
     def __init__(self, x_max = 30, y_max = 30):
         self.obstacle_points: List[Vec2] = []
@@ -36,8 +40,13 @@ class Map:
         pm = PrimMaze(self.y_max, self.x_max)
         pm.generate()
 
-        self.start_point = Vec2(pm.start_point[1], pm.start_point[0])
-        self.end_point = Vec2(self.x_max - 2, self.y_max - 2)
+        self.start_point.updateXY(pm.start_point[1], pm.start_point[0])
+        self.end_point.updateXY(self.x_max - 2, self.y_max - 2)
+
+        if isEvenNumber(self.x_max):
+            self.end_point.x = self.x_max - 3
+        if isEvenNumber(self.y_max):
+            self.end_point.y = self.y_max - 3
 
         for row in range(pm.row_max):
             for col in range(pm.col_max):

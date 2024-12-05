@@ -1,11 +1,21 @@
 import math
 
+from typing import Tuple
+
 class Vec2:
     def __init__(self, x, y):
         self.x = x
         self.y = y
         self.G = 0
         self.parent: Vec2 = None
+
+    def updateXY(self, x, y):
+        self.x = x
+        self.y = y
+
+    def fromTuple(self, t: Tuple[int, int]):
+        self.x = t[0]
+        self.y = t[1]
 
 def ManhattanDistance(p1: Vec2, p2: Vec2):
     '''曼哈顿距离'''
