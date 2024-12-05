@@ -7,7 +7,9 @@ from vec2 import DiagonalDistance, ManhattanDistance, Vec2
 
 class AStar:
     def __init__(self, map: Map, diagonalMovementEnabled = True):
+        # 待遍历节点列表
         self.open_list: List[Vec2] = []
+        # 已遍历节点列表
         self.closed_list: List[Vec2] = []
         self.map = map
         # 是否允许对角线移动
@@ -45,6 +47,7 @@ class AStar:
             if not self.isInPointList(point, explored_points):
                 explored_points.append(point)
 
+            # 到达终点
             if self.isEndPoint(point):
                 path_points = self.buildPath(point)
                 break
@@ -58,6 +61,7 @@ class AStar:
         return path_points, explored_points
 
     def selectPointInOpenList(self):
+        '''从 open_list 中选择一个代价最小的节点'''
         min_cost = math.inf
         selected_index = -1
 
@@ -70,26 +74,33 @@ class AStar:
         return selected_index
 
     def moveOn(self, point: Vec2):
+        '''向四面/八方移动'''
         for idx, direction in enumerate(self.directions):
+            # 不允许对角线移动
             if not self.diagonalMovementEnabled and idx >= 4:
                 break
 
+            # 新到达的位置
             next_point = Vec2(point.x + direction.x, point.y + direction.y)
+            # 从原位置移动到新位置所付出的代价
             step_cost = self.UNIT_COST1 if idx < 4 else self.UNIT_COST2
 
             self.step(point, next_point, step_cost)
 
     def step(self, point: Vec2, next_point: Vec2, step_cost):
+        '''处理新到达的位置'''
         if not self.isValidPoint(next_point):
             return
 
         if self.isInClosedList(next_point):
             return
 
+        # 新位置对应的当前代价
         current_cost = point.G + step_cost
 
         this_point = self.GetPoint(next_point.x, next_point.y, self.open_list)
 
+        # 将其加入到 open_list 中
         if this_point == None:
             next_point.G = current_cost
             next_point.parent = point
@@ -103,6 +114,7 @@ class AStar:
             this_point.parent = point
 
     def buildPath(self, point: Vec2):
+        '''构建一个从起点到终点的节点列表'''
         points = []
 
         while True:

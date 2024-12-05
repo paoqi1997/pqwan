@@ -41,6 +41,7 @@ def preparePlot(x_max = 31, y_max = 31, is_maze = False):
     return fig, ax
 
 def update(frame, context):
+    '''仅绘制最终路径'''
     cIndex: CIndex = context['c_index_path_points']
 
     idx = cIndex.idx
@@ -60,6 +61,7 @@ def update(frame, context):
         fill_grid_with_color(ax, point.x, point.y, 'green')
 
 def updateWithExploredPoints(frame, context):
+    '''绘制探索过的路径及最终路径'''
     ax: Axes = context['ax']
     cIndex1: CIndex = context['c_index_explored_points']
     cIndex2: CIndex = context['c_index_path_points']
@@ -107,13 +109,18 @@ def main():
     else:
         map.generateObstacles()
 
+    # 绘制起点
     fill_grid_with_color(ax, map.start_point.x, map.start_point.y, 'blue')
+    # 绘制终点
     fill_grid_with_color(ax, map.end_point.x, map.end_point.y, 'red')
 
+    # 绘制障碍
     for point in map.obstacle_points:
         fill_grid_with_color(ax, point.x, point.y)
 
+    # 迷宫地图不允许对角线移动
     diagonalMovementEnabled = False if is_maze else True
+
     astarAlgo = astar.AStar(map, diagonalMovementEnabled)
     path_points, explored_points = astarAlgo.planning()
 

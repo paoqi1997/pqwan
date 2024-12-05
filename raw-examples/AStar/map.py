@@ -31,12 +31,14 @@ class Map:
         self.obstacle_points.append(Vec2(x, y))
 
     def generateObstacles(self, generateFunc = None):
+        '''生成障碍'''
         if generateFunc == None:
             self.generateObstacles_1()
         else:
             generateFunc()
 
     def generateFromPrimMaze(self):
+        '''以随机迷宫为基础，生成障碍'''
         pm = PrimMaze(self.y_max, self.x_max)
         pm.generate()
 

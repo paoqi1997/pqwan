@@ -6,7 +6,9 @@ class Vec2:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        # g(n)
         self.G = 0
+        # 父节点
         self.parent: Vec2 = None
 
     def updateXY(self, x, y):
