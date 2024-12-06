@@ -79,10 +79,10 @@ class Map:
         y_bottom = round(self.y_max / 10)
         y_top = round(self.y_max * 9 / 10)
 
-        for y in range(y_bottom, self.y_max):
+        for y in range(y_top):
             x = x_left
             self.addPoint(x, y)
 
-        for y in range(y_top):
+        for y in range(y_bottom, self.y_max):
             x = x_right
             self.addPoint(x, y)
