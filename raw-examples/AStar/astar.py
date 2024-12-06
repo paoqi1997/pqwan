@@ -107,9 +107,10 @@ class AStar:
             self.open_list.append(next_point)
         # 找到更优的路径
         elif current_cost < this_point.G:
-            p1_msg = f'this_point({this_point.G:.2f}): ({this_point.x}, {this_point.y})'
-            p2_msg = f'point({current_cost:.2f}): ({point.x}, {point.y})'
-            print(f'{p1_msg} -> {p2_msg}')
+            msg1 = f'this_point_parent: ({this_point.parent.x}, {this_point.parent.y}) -> ({point.x}, {point.y})'
+            msg2 = f'this_point: ({this_point.x}, {this_point.y})'
+            msg3 = f'cost: {this_point.G:.2f} -> {current_cost:.2f}'
+            print(f'{msg1}, {msg2}, {msg3}')
             this_point.G = current_cost
             this_point.parent = point
 
