@@ -38,6 +38,9 @@ raw-examples/learnopengl/3rd-party
 # Lua 5.4.*
 raw-examples/CppWithLua/lua-5.4.*
 
+# V8 10.6.194
+raw-examples/CppWithJs/v8_10.6.194
+
 # Output directories
 build
 .xmake

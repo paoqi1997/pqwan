@@ -23,6 +23,22 @@
             "options": {
                 "cwd": "${workspaceFolder}/raw-examples/CppWithLua/stopwatch"
             }
+        },
+        {
+            "type": "shell",
+            "label": "calc: xmake build",
+            "command": "xmake f -m debug -o ${workspaceFolder}/raw-examples/CppWithJs/xbuild && xmake",
+            "options": {
+                "cwd": "${workspaceFolder}/raw-examples/CppWithJs/calc"
+            }
+        },
+        {
+            "type": "shell",
+            "label": "calc: xmake clean",
+            "command": "xmake c -a",
+            "options": {
+                "cwd": "${workspaceFolder}/raw-examples/CppWithJs/calc"
+            }
         }
     ],
     "version": "2.0.0",
