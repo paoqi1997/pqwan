@@ -2,7 +2,7 @@
 
 ## V8
 
-### Build
+### d8
 
 获取 depot_tools 工具。
 
@@ -52,9 +52,17 @@ PS C:\Users\paoqi\workspace\v8\v8> cd out/x64.debug
 PS C:\Users\paoqi\workspace\v8\v8\out\x64.debug> ./d8
 ```
 
+### lib
+
+确实是可以尝试自己编译库，不过既然有现成的还是直接用现成的吧……
+
+现成的由 [puerts](https://puerts.github.io/docs/puerts/unreal/install) 提供。
+
 ### TPs
 
 [Building V8 from source](https://v8.dev/docs/build)
+
+[从源代码构建 V8](https://v8.node.org.cn/docs/build)
 
 [Checking out and Building Chromium for Windows](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/windows_build_instructions.md)
 
