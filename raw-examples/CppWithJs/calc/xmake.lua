@@ -5,8 +5,26 @@ target("app")
     set_symbols("debug")
     add_files("*.cpp")
     add_includedirs("../v8_10.6.194/Inc")
-    add_links("v8.dll") -- v8.dll.lib
-    if is_plat("windows") then
+
+    local mode = "dynamic"
+
+    local is_windows = is_plat("windows")
+    local is_static = mode == "static"
+    local is_dynamic = mode == "dynamic"
+    local is_windows_static = is_windows and is_static
+    local is_windows_dynamic = is_windows and is_dynamic
+
+    if is_windows_static then
+        add_links("wee8")
+        add_links("ADVAPI32")
+        add_links("WINMM")
+
+        local rel_lib_dir = "../v8_10.6.194/Lib/Win64"
+        local abs_lib_dir = path.absolute(rel_lib_dir)
+        add_linkdirs(abs_lib_dir)
+    elseif is_windows_dynamic then
+        add_links("v8.dll") -- v8.dll.lib
+
         local rel_lib_dir = "../v8_10.6.194/Lib/Win64DLL"
         local abs_lib_dir = path.absolute(rel_lib_dir)
         add_linkdirs(abs_lib_dir)
