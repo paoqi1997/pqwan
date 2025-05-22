@@ -16,8 +16,8 @@ target("app")
 
     if is_windows_static then
         add_links("wee8")
-        add_links("ADVAPI32")
-        add_links("WINMM")
+        add_links("advapi32")
+        add_links("winmm")
 
         local rel_lib_dir = "../v8_10.6.194/Lib/Win64"
         local abs_lib_dir = path.absolute(rel_lib_dir)
