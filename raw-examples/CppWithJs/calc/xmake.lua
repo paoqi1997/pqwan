@@ -24,6 +24,7 @@ target("app")
         add_linkdirs(abs_lib_dir)
     elseif is_windows_dynamic then
         add_links("v8.dll") -- v8.dll.lib
+        add_links("v8_libplatform.dll")
 
         local rel_lib_dir = "../v8_10.6.194/Lib/Win64DLL"
         local abs_lib_dir = path.absolute(rel_lib_dir)

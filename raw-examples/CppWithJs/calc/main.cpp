@@ -1,12 +1,15 @@
 #include <iostream>
 
-#include <v8.h>
+#include "JsEnv.h"
+#include "util.h"
 
 int main()
 {
-    const char* version = v8::V8::GetVersion();
+    JsEnv* jsEnv = JsEnv::getInstance();
 
-    std::cout << version << std::endl;
+    std::string result = jsEnv->runJsFile("main.js");
+
+    std::cout << result << std::endl;
 
     return 0;
 }
