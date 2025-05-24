@@ -74,6 +74,8 @@ PS C:\Users\paoqi\workspace\v8\v8\out\x64.debug> ./d8
 
 [Could not build v8 on windows with VS2019 #624](https://github.com/v8/v8.dev/issues/624)
 
+[No.js 的模块加载器实现](https://zhuanlan.zhihu.com/p/410825399)
+
 #### 链接错误
 
 [VS2017链接V8引擎库遇到的一些问题](https://blog.csdn.net/weixin_43939128/article/details/104678515)
@@ -81,6 +83,12 @@ PS C:\Users\paoqi\workspace\v8\v8\out\x64.debug> ./d8
 [windos vs2019 || clion cmake clang msvc 编译v8 引擎](https://www.cnblogs.com/cfas/p/15657434.html)
 
 [Building Chrome V8 on Windows](https://gist.github.com/jhalon/5cbaab99dccadbf8e783921358020159)
+
+#### GitHub repos
+
+[huruji/v8-load-js-file](https://github.com/huruji/v8-load-js-file)
+
+[theanarkh/No.js](https://github.com/theanarkh/No.js)
 
 #### MSVC
 
