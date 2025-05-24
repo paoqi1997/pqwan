@@ -2,12 +2,12 @@
 
 const { loader } = builtins;
 
-function loadInnerModules() {
+function loadBuiltInModules() {
     builtins.libs = {};
 
     const modules = [
         {
-            module: 'builtins/libs/module.js',
+            path: 'builtins/libs/module.js',
             name: 'module'
         },
     ];
@@ -17,9 +17,12 @@ function loadInnerModules() {
             exports: {},
         };
 
-        // function(require, exports, module)
-        loader.compile(modules[i].module).call(null, loader.compile, module.exports, module);
+        // function(require, exports, module) {
+        //   module.js 文件的内容
+        // }
+        loader.compile(modules[i].path).call(null, loader.compile, module.exports, module);
 
+        // module.exports = Module;
         builtins.libs[modules[i].name] = module.exports;
     }
 }
@@ -29,5 +32,5 @@ function runMain() {
     return 'finished';
 }
 
-loadInnerModules();
+loadBuiltInModules();
 runMain();

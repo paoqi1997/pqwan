@@ -11,10 +11,14 @@ class Module
         this.exports = {};
     }
 
-    load() {
+    selfLoad() {
         const result = loader.compile(this.filename);
-        // function(require, exports, module)
+
+        // function(require, exports, module) {
+        //   index.js 文件的内容
+        // }
         result.call(this, Module.load, this.exports, this);
+
         return this.exports;
     }
 
@@ -25,11 +29,11 @@ class Module
 
         const module = new Module(filename, ...args);
 
-        const r = (map[filename] = module.load());
+        const exports = (map[filename] = module.selfLoad());
 
-        PRINT(`R:${filename}: ${JSON.stringify(r)}`);
+        PRINT(`exports:${filename}: ${JSON.stringify(exports)}`);
 
-        return r;
+        return exports;
     }
 }
 
