@@ -1,15 +1,15 @@
 #include <iostream>
 
 #include "JsEnv.h"
-#include "util.h"
 
 int main()
 {
-    JsEnv* jsEnv = JsEnv::getInstance();
+    bool runSucc = JsEnv::getInstance()->run();
 
-    std::string result = jsEnv->runJsFile("main.js");
-
-    std::cout << result << std::endl;
+    if (!runSucc) {
+        std::cout << "JsEnv::run failed." << std::endl;
+        return 1;
+    }
 
     return 0;
 }

@@ -17,8 +17,7 @@ public:
     }
     JsEnv(const JsEnv&) = delete;
     JsEnv& operator = (const JsEnv&) = delete;
-    std::string runJsFile(const std::string& filePath);
-    std::string runScriptString(const char* scriptString);
+    bool run();
 private:
     JsEnv();
     ~JsEnv();
