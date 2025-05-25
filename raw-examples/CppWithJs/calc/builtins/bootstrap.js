@@ -2,7 +2,7 @@
 
 const { loader } = builtins;
 
-function loadBuiltInModules() {
+function loadNativeModules() {
     builtins.libs = {};
 
     const modules = [
@@ -32,5 +32,5 @@ function runMain() {
     return 'finished';
 }
 
-loadBuiltInModules();
+loadNativeModules();
 runMain();

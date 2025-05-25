@@ -40,6 +40,9 @@ void jsCompile(const v8::FunctionCallbackInfo<v8::Value>& args)
         ToV8String("module"),
     };
 
+    // function(require, exports, module) {
+    //   fileContent
+    // }
     v8::MaybeLocal<v8::Function> func = v8::ScriptCompiler::CompileFunction(context, &source, 3, params, 0, nullptr);
 
     if (func.IsEmpty()) {
