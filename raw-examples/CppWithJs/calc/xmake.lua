@@ -17,6 +17,7 @@ target("app")
     if is_windows_static then
         add_links("wee8")
         add_links("advapi32")
+        add_links("dbghelp")
         add_links("winmm")
 
         local rel_lib_dir = "../v8_10.6.194/Lib/Win64"
