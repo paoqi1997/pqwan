@@ -2,6 +2,18 @@
 
 学习 Unreal。
 
+## 工程实践
+
+### TPs
+
+[虚幻引擎随笔：意外的重新编译或生成引擎源码](https://www.bilibili.com/opus/552142557286366282)
+
+[定制UE4引擎，如何避免C++项目重编引擎](https://www.bilibili.com/opus/464162093554185164)
+
+[定制UE引擎，如何避免C++项目重编引擎](https://zhuanlan.zhihu.com/p/593960535)
+
+[《UE4开发笔记》Tip 1 编译完全指南](https://zhuanlan.zhihu.com/p/509308558)
+
 ## 编译 UE4 源码
 
 ### 下载源码及依赖
