@@ -136,7 +136,7 @@ int main()
      * 3: 顶点属性是一个vec3，由3个值组成
      * GL_FLOAT: 数据类型为float
      * GL_FALSE: 是否希望数据被标准化
-     * 8 * sizeof(float): 连续的顶点属性组之间的间隔
+     * 5 * sizeof(float): 连续的顶点属性组之间的间隔
      * (void*)0: 位置数据在缓冲中相对起始位置的偏移量
      */
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), static_cast<void*>(0));

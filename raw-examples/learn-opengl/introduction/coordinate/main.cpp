@@ -114,13 +114,16 @@ int main()
      * 3: 顶点属性是一个vec3，由3个值组成
      * GL_FLOAT: 数据类型为float
      * GL_FALSE: 是否希望数据被标准化
-     * 8 * sizeof(float): 连续的顶点属性组之间的间隔
+     * 5 * sizeof(float): 连续的顶点属性组之间的间隔
      * (void*)0: 位置数据在缓冲中相对起始位置的偏移量
      */
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), static_cast<void*>(0));
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    // OpenGL的(0,0)坐标位于左下角，而图像的(0,0)坐标通常位于左上角，故图像需要垂直翻转
+    stbi_set_flip_vertically_on_load(true);
 
     int iWidth, iHeight, nChannels;
     unsigned char *data;
@@ -135,9 +138,6 @@ int main()
     // 设置Filter相关的参数，即指定纹理坐标映射至数组中的处理方式
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // OpenGL的(0,0)坐标位于左下角，而图像的(0,0)坐标通常位于左上角，故图像需要垂直翻转
-    stbi_set_flip_vertically_on_load(true);
 
     data = stbi_load("container.jpg", &iWidth, &iHeight, &nChannels, 0);
     if (data) {
@@ -199,8 +199,19 @@ int main()
         glm::mat4 view(1.0f);
         glm::mat4 projection(1.0f);
 
+        // 从局部空间变换到世界空间
+        // 1. 模型会绕轴(0.5, 1.0)随时间旋转
+        // 2. 每秒旋转50°
         model = glm::rotate(model, float(glfwGetTime()) * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+        // 将世界坐标变换到观察空间
+        // 整体向后平移3个单位
         view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        // 从观察空间变换到裁剪空间
+        // 创建一个透视投影矩阵
+        // 1. FOV表示视野宽度
+        // 2. 宽高比用于防止图像被拉伸变形
+        // 3. near用于剔除掉离相机太近的物体
+        // 4. far用于剔除掉离相机太远的物体
         projection = glm::perspective(glm::radians(45.0f), float(screenWidth) / float(screenHeight), 0.1f, 100.0f);
 
         shaderHelper.use();
