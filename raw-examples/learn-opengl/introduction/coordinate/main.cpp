@@ -12,88 +12,40 @@
 
 #include <util.h>
 
-#define BUFSIZE 1024
+#include "helper.h"
 
-using namespace std;
-
-// 窗口大小变化时回调
-void frameBufferSizeCB(GLFWwindow *window, int width, int height);
-// 处理输入
-void processInput(GLFWwindow *window);
+using std::cout;
+using std::endl;
 
 int main()
 {
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    GLFWHelper glfwHelper;
 
-    constexpr int screenWidth = 800;
-    constexpr int screenHeight = 600;
-
-    GLFWwindow *window = glfwCreateWindow(screenWidth, screenHeight, "Hello OpenGL", nullptr, nullptr);
-    if (window == nullptr) {
-        cout << "error: glfwCreateWindow()" << endl;
-        glfwTerminate();
+    if (glfwHelper.initWindow() != 0) {
+        cout << "error: GLFWHelper::initWindow()" << endl;
         return 1;
     }
 
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, frameBufferSizeCB);
+    int screenWidth = glfwHelper.width;
+    int screenHeight = glfwHelper.height;
 
     // 加载OpenGL函数指针
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
         cout << "error: gladLoadGLLoader()" << endl;
-        return 1;
+        return 2;
     }
 
-    // xxxxxx
+    // 启用深度测试
     glEnable(GL_DEPTH_TEST);
 
-    int flag;
-    char infoLog[BUFSIZE];
-    const char *shaderSource;
+    ShaderHelper shaderHelper;
 
-    // 顶点着色器
-    int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    pqwan::File oVertFile("shader.vert");
-    shaderSource = oVertFile.getFileContent();
-    glShaderSource(vertexShader, 1, &shaderSource, nullptr);
-    glCompileShader(vertexShader);
-
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &flag);
-    if (!flag) {
-        glGetShaderInfoLog(vertexShader, BUFSIZE, nullptr, infoLog);
-        cout << "error: SHADER::VERTEX::COMPILATION\n" << infoLog << endl;
+    if (!shaderHelper.init()) {
+        cout << "error: ShaderHelper::init()" << endl;
+        return 3;
     }
 
-    // 片元着色器
-    int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    pqwan::File oFragFile("shader.frag");
-    shaderSource = oFragFile.getFileContent();
-    glShaderSource(fragmentShader, 1, &shaderSource, nullptr);
-    glCompileShader(fragmentShader);
-
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &flag);
-    if (!flag) {
-        glGetShaderInfoLog(fragmentShader, BUFSIZE, nullptr, infoLog);
-        cout << "error: SHADER::FRAGMENT::COMPILATION\n" << infoLog << endl;
-    }
-
-    // 着色器程序
-    int shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &flag);
-    if (!flag) {
-        glGetProgramInfoLog(shaderProgram, BUFSIZE, nullptr, infoLog);
-        cout << "error: SHADER::PROGRAM::LINKING\n" << infoLog << endl;
-    }
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    int shaderProgram = shaderHelper.getShaderProgram();
 
     // 定义36个顶点
     float vertices[] = {
@@ -228,15 +180,13 @@ int main()
 
     stbi_image_free(data);
 
-    glUseProgram(shaderProgram);
+    shaderHelper.use();
+
     // 告诉OpenGL哪个采样器对应哪个纹理单元
     glUniform1i(glGetUniformLocation(shaderProgram, "sampler1"), 1);
     glUniform1i(glGetUniformLocation(shaderProgram, "sampler2"), 2);
 
-    // 渲染循环
-    while (!glfwWindowShouldClose(window)) {
-        processInput(window);
-
+    auto loop = [&](){
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -253,7 +203,7 @@ int main()
         view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
         projection = glm::perspective(glm::radians(45.0f), float(screenWidth) / float(screenHeight), 0.1f, 100.0f);
 
-        glUseProgram(shaderProgram);
+        shaderHelper.use();
 
         unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
         unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
@@ -267,25 +217,12 @@ int main()
         glBindVertexArray(vArrayObj);
         // 绘制36个顶点
         glDrawArrays(GL_TRIANGLES, 0, 36);
+    };
 
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
+    glfwHelper.show(loop);
 
     glDeleteVertexArrays(1, &vArrayObj);
     glDeleteBuffers(1, &vBufferObj);
 
-    glfwTerminate();
-
     return 0;
-}
-
-void frameBufferSizeCB(GLFWwindow *window, int width, int height) {
-    glViewport(0, 0, width, height);
-}
-
-void processInput(GLFWwindow *window) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, true);
-    }
 }

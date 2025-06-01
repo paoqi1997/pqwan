@@ -5,7 +5,7 @@ include_directories (../../3rd-party/include)
 link_directories (../../3rd-party/lib)
 
 set (LIBS util glad glfw3 opengl32)
-set (SRCS main.cpp)
+set (SRCS main.cpp helper.cpp)
 
 if (WIN32)
     add_executable (app ${SRCS})
