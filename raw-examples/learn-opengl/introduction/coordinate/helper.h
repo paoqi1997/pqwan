@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 
 // 窗口大小变化时回调
-void frameBufferSizeFn(GLFWwindow* window, int width, int height);
+void frameBufferSizeCb(GLFWwindow* window, int width, int height);
 
 class GLFWHelper
 {

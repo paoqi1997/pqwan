@@ -5,7 +5,7 @@
 #include "helper.h"
 #include "util.h"
 
-void frameBufferSizeFn(GLFWwindow* window, int width, int height)
+void frameBufferSizeCb(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
@@ -36,7 +36,7 @@ int GLFWHelper::initWindow(int width, int height, const char *title)
     this->height = height;
 
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, frameBufferSizeFn);
+    glfwSetFramebufferSizeCallback(window, frameBufferSizeCb);
 
     return 0;
 }
