@@ -26,9 +26,9 @@ private:
 
 // 窗口大小变化时回调
 void frameBufferSizeCb(GLFWwindow* window, int width, int height);
-// xxx
+// 鼠标移动时回调
 void cursorPosCb(GLFWwindow* window, double xposIn, double yposIn);
-// xxx
+// 使用鼠标滚轮时回调
 void scrollCb(GLFWwindow* window, double xoffset, double yoffset);
 
 class GLFWHelper
@@ -87,22 +87,22 @@ public:
 private:
     void onUpdateVectors();
 public:
-    bool FirstMouse;
-    float LastX;
-    float LastY;
-    float Zoom;
+    bool FirstMouse; // 是否首次移动鼠标
+    float LastX;     // 上一帧鼠标光标的x坐标
+    float LastY;     // 上一帧鼠标光标的y坐标
+    float Zoom;      // FOV
 private:
     Camera();
     static Camera *instance;
-    glm::vec3 position;
-    glm::vec3 front;
-    glm::vec3 up;
-    glm::vec3 right;
-    glm::vec3 worldUp;
-    float yaw;
-    float pitch;
-    float movementSpeed;
-    float mouseSensitivity;
+    glm::vec3 position; // 相机位置，即一个指向相机位置的向量
+    glm::vec3 front;    // 相机朝向，即相机的正前方
+    glm::vec3 up;       // 相机的正上方
+    glm::vec3 right;    // 相机的正右方
+    glm::vec3 worldUp;  // 世界坐标系的正上方
+    float yaw;   // 偏航角，视线在 xz 平面上的投影和x轴的夹角，是描述如何往左或者往右看的角
+    float pitch; // 俯仰角，视线和 xz 平面的夹角，是描述如何往上或者往下看的角
+    float movementSpeed;    // 鼠标移动速度的基准值
+    float mouseSensitivity; // 鼠标灵敏度
 };
 
 } // namespace pqwan

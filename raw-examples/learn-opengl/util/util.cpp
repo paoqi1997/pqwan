@@ -51,6 +51,9 @@ void pqwan::cursorPosCb(GLFWwindow* window, double xposIn, double yposIn)
     }
 
     float xoffset = xpos - camera->LastX;
+
+    // OpenGL 和 GLFW 的坐标系在y轴方向上正好相反
+    // OpenGL y轴向上为正方向，GLFW y轴向下为正方向
     float yoffset = camera->LastY - ypos;
 
     camera->LastX = xpos;
@@ -99,12 +102,14 @@ void GLFWHelper::workWithCamera()
 {
     hasCamera = true;
 
+    // 鼠标光标起始位置取屏幕/窗口正中央
     Camera::getInstance()->LastX = width / 2.0f;
     Camera::getInstance()->LastY = height / 2.0f;
 
     glfwSetCursorPosCallback(window, cursorPosCb);
     glfwSetScrollCallback(window, scrollCb);
 
+    // 隐藏鼠标光标并将其留在窗口内
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
@@ -243,6 +248,7 @@ Camera::Camera() :
 
 glm::mat4 Camera::getViewMatrix()
 {
+    // center 为相机看向的位置，故传入 position + front
     return glm::lookAt(position, position + front, up);
 }
 
@@ -277,6 +283,7 @@ void Camera::handleMouseMovement(float xoffset, float yoffset, bool constrainPit
     yaw += xoffset;
     pitch += yoffset;
 
+    // 往上下方向看的视角受限
     if (constrainPitch) {
         if (pitch > 89.0f) {
             pitch = 89.0f;
@@ -304,11 +311,18 @@ void Camera::handleMouseScroll(float yoffset)
 void Camera::onUpdateVectors()
 {
     glm::vec3 currFront;
+
+    // yaw 的余弦值参与x分量的计算
     currFront.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    // pitch 的正弦值就是y分量，应注意其余弦值会影响水平分量
     currFront.y = sin(glm::radians(pitch));
+    // yaw 的正弦值参与z分量的计算
     currFront.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
+    // 均需要归一化处理
     front = glm::normalize(currFront);
+    // 对<相机正前方>和<世界正上方>做叉乘运算得到<相机正右方>
     right = glm::normalize(glm::cross(front, worldUp));
+    // 对<相机正右方>和<相机正前方>做叉乘运算得到<相机正上方>
     up = glm::normalize(glm::cross(right, front));
 }
