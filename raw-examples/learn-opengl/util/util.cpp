@@ -37,7 +37,34 @@ void pqwan::frameBufferSizeCb(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-GLFWHelper::GLFWHelper()
+void pqwan::cursorPosCb(GLFWwindow* window, double xposIn, double yposIn)
+{
+    float xpos = static_cast<float>(xposIn);
+    float ypos = static_cast<float>(yposIn);
+
+    Camera *camera = Camera::getInstance();
+
+    if (camera->FirstMouse) {
+        camera->LastX = xpos;
+        camera->LastY = ypos;
+        camera->FirstMouse = false;
+    }
+
+    float xoffset = xpos - camera->LastX;
+    float yoffset = camera->LastY - ypos;
+
+    camera->LastX = xpos;
+    camera->LastY = ypos;
+
+    camera->handleMouseMovement(xoffset, yoffset);
+}
+
+void pqwan::scrollCb(GLFWwindow* window, double xoffset, double yoffset)
+{
+    Camera::getInstance()->handleMouseScroll(static_cast<float>(yoffset));
+}
+
+GLFWHelper::GLFWHelper() : hasCamera(false), lastFrameTime(0.0f)
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -68,12 +95,43 @@ int GLFWHelper::initWindow(int width, int height, const char *title)
     return 0;
 }
 
+void GLFWHelper::workWithCamera()
+{
+    hasCamera = true;
+
+    Camera::getInstance()->LastX = width / 2.0f;
+    Camera::getInstance()->LastY = height / 2.0f;
+
+    glfwSetCursorPosCallback(window, cursorPosCb);
+    glfwSetScrollCallback(window, scrollCb);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
 void GLFWHelper::show(const std::function<void()>& func)
 {
     while (!glfwWindowShouldClose(window)) {
         // 处理输入
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, true);
+        }
+
+        if (hasCamera) {
+            float currFrameTime = static_cast<float>(glfwGetTime());
+            float deltaTime = currFrameTime - lastFrameTime;
+            lastFrameTime = currFrameTime;
+
+            Camera *camera = Camera::getInstance();
+
+            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+                camera->handleKeyboard(Camera::FORWARD, deltaTime);
+            } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+                camera->handleKeyboard(Camera::BACKWARD, deltaTime);
+            } else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+                camera->handleKeyboard(Camera::LEFT, deltaTime);
+            } else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+                camera->handleKeyboard(Camera::RIGHT, deltaTime);
+            }
         }
 
         func();
@@ -170,4 +228,87 @@ bool ShaderHelper::linkProgram(int vertexShader, int fragmentShader)
     glDeleteShader(fragmentShader);
 
     return true;
+}
+
+Camera *Camera::instance = nullptr;
+
+Camera::Camera() :
+    FirstMouse(true), LastX(0.0f), LastY(0.0f), Zoom(45.0f),
+    position(0.0f, 0.0f, 3.0f), up(0.0f, 1.0f, 0.0f), front(0.0f, 0.0f, -1.0f),
+    yaw(-90.0f), pitch(0.0f), movementSpeed(2.5f), mouseSensitivity(0.1f)
+{
+    worldUp = up;
+    onUpdateVectors();
+}
+
+glm::mat4 Camera::getViewMatrix()
+{
+    return glm::lookAt(position, position + front, up);
+}
+
+void Camera::handleKeyboard(Direction direction, float deltaTime)
+{
+    float velocity = movementSpeed * deltaTime;
+
+    switch (direction)
+    {
+    case FORWARD:
+        position += front * velocity;
+        break;
+    case BACKWARD:
+        position -= front * velocity;
+        break;
+    case LEFT:
+        position -= right * velocity;
+        break;
+    case RIGHT:
+        position += right * velocity;
+        break;
+    default:
+        break;
+    }
+}
+
+void Camera::handleMouseMovement(float xoffset, float yoffset, bool constrainPitch)
+{
+    xoffset *= mouseSensitivity;
+    yoffset *= mouseSensitivity;
+
+    yaw += xoffset;
+    pitch += yoffset;
+
+    if (constrainPitch) {
+        if (pitch > 89.0f) {
+            pitch = 89.0f;
+        }
+        if (pitch < -89.0f) {
+            pitch = -89.0f;
+        }
+    }
+
+    onUpdateVectors();
+}
+
+void Camera::handleMouseScroll(float yoffset)
+{
+    Zoom -= yoffset;
+
+    if (Zoom < 1.0f) {
+        Zoom = 1.0f;
+    }
+    if (Zoom > 45.0f) {
+        Zoom = 45.0f;
+    }
+}
+
+void Camera::onUpdateVectors()
+{
+    glm::vec3 currFront;
+    currFront.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    currFront.y = sin(glm::radians(pitch));
+    currFront.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+    front = glm::normalize(currFront);
+    right = glm::normalize(glm::cross(front, worldUp));
+    up = glm::normalize(glm::cross(right, front));
 }

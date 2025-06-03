@@ -7,6 +7,9 @@
 
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 namespace pqwan
 {
 
@@ -23,6 +26,10 @@ private:
 
 // 窗口大小变化时回调
 void frameBufferSizeCb(GLFWwindow* window, int width, int height);
+// xxx
+void cursorPosCb(GLFWwindow* window, double xposIn, double yposIn);
+// xxx
+void scrollCb(GLFWwindow* window, double xoffset, double yoffset);
 
 class GLFWHelper
 {
@@ -30,12 +37,15 @@ public:
     GLFWHelper();
     ~GLFWHelper();
     int initWindow(int width = 800, int height = 600, const char *title = "Hello OpenGL");
+    void workWithCamera();
     void show(const std::function<void()>& func);
 public:
     int width;
     int height;
 private:
     GLFWwindow *window;
+    bool hasCamera;
+    float lastFrameTime;
 };
 
 class ShaderHelper
@@ -50,6 +60,49 @@ private:
     bool linkProgram(int vertexShader, int fragmentShader);
 private:
     int shaderProgram;
+};
+
+class Camera
+{
+public:
+    enum Direction {
+        FORWARD,
+        BACKWARD,
+        LEFT,
+        RIGHT,
+    };
+public:
+    static Camera* getInstance() {
+        if (instance == nullptr) {
+            instance = new Camera();
+        }
+        return instance;
+    }
+    Camera(const Camera&) = delete;
+    Camera& operator = (const Camera&) = delete;
+    glm::mat4 getViewMatrix();
+    void handleKeyboard(Direction direction, float deltaTime);
+    void handleMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
+    void handleMouseScroll(float yoffset);
+private:
+    void onUpdateVectors();
+public:
+    bool FirstMouse;
+    float LastX;
+    float LastY;
+    float Zoom;
+private:
+    Camera();
+    static Camera *instance;
+    glm::vec3 position;
+    glm::vec3 front;
+    glm::vec3 up;
+    glm::vec3 right;
+    glm::vec3 worldUp;
+    float yaw;
+    float pitch;
+    float movementSpeed;
+    float mouseSensitivity;
 };
 
 } // namespace pqwan

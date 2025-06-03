@@ -24,6 +24,10 @@ int main()
         return 1;
     }
 
+    glfwHelper.workWithCamera();
+
+    pqwan::Camera *camera = pqwan::Camera::getInstance();
+
     int screenWidth = glfwHelper.width;
     int screenHeight = glfwHelper.height;
 
@@ -88,6 +92,20 @@ int main()
          0.5f,  0.5f,  0.5f, 1.0f, 0.0f,
         -0.5f,  0.5f,  0.5f, 0.0f, 0.0f,
         -0.5f,  0.5f, -0.5f, 0.0f, 1.0f
+    };
+
+    // 为10个立方体定义它们各自的位移向量
+    glm::vec3 cubePositions[] = {
+        { 0.0f,  0.0f,   0.0f},
+        { 2.0f,  5.0f, -15.0f},
+        {-1.5f, -2.2f,  -2.5f},
+        {-3.8f, -2.0f, -12.3f},
+        { 2.4f, -0.4f,  -3.5f},
+        {-1.7f,  3.0f,  -7.5f},
+        { 1.3f, -2.0f,  -2.5f},
+        { 1.5f,  2.0f,  -2.5f},
+        { 1.5f,  0.2f,  -1.5f},
+        {-1.3f,  1.0f,  -1.5f}
     };
 
     // 使用一个顶点缓冲对象将顶点数据拷贝至缓冲中
@@ -193,24 +211,19 @@ int main()
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
-        glm::mat4 model(1.0f);
         glm::mat4 view(1.0f);
         glm::mat4 projection(1.0f);
 
-        // 从局部空间变换到世界空间
-        // 1. 模型会绕轴(0.5, 1.0)随时间旋转
-        // 2. 每秒旋转50°
-        model = glm::rotate(model, float(glfwGetTime()) * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
         // 将世界坐标变换到观察空间
-        // 整体向后平移3个单位
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        // 获取相机的 lookAt 矩阵
+        view = camera->getViewMatrix();
         // 从观察空间变换到裁剪空间
         // 创建一个透视投影矩阵
         // 1. FOV表示视野宽度
         // 2. 宽高比用于防止图像被拉伸变形
         // 3. near用于剔除掉离相机太近的物体
         // 4. far用于剔除掉离相机太远的物体
-        projection = glm::perspective(glm::radians(45.0f), float(screenWidth) / float(screenHeight), 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(camera->Zoom), float(screenWidth) / float(screenHeight), 0.1f, 100.0f);
 
         shaderHelper.use();
 
@@ -219,13 +232,30 @@ int main()
         unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
 
         // 将变换矩阵传递给着色器
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
+        for (std::size_t i = 0; i < sizeof(cubePositions) / sizeof(glm::vec3); ++i) {
+            // 创建一个单位矩阵
+            glm::mat4 model(1.0f);
+
+            // 按照给定的位移向量进行平移变换
+            model = glm::translate(model, cubePositions[i]);
+
+            // 计算旋转角度
+            float angle = i * 20.0f;
+
+            // 从局部空间变换到世界空间
+            // 1. 模型会绕轴(1.0, 0.3, 0.5)旋转 angle 度
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+
+            glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+            // 绘制36个顶点
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+
         glBindVertexArray(vArrayObj);
-        // 绘制36个顶点
-        glDrawArrays(GL_TRIANGLES, 0, 36);
     };
 
     glfwHelper.show(loop);
