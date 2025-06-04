@@ -186,7 +186,7 @@ int main()
     glUniform1i(glGetUniformLocation(shaderProgram, "sampler1"), 1);
     glUniform1i(glGetUniformLocation(shaderProgram, "sampler2"), 2);
 
-    auto loop = [&](){
+    auto doFunc = [&](){
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -230,7 +230,7 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, 36);
     };
 
-    glfwHelper.show(loop);
+    glfwHelper.show(doFunc);
 
     glDeleteVertexArrays(1, &vArrayObj);
     glDeleteBuffers(1, &vBufferObj);

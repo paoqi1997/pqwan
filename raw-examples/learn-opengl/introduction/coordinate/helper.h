@@ -14,7 +14,7 @@ public:
     GLFWHelper();
     ~GLFWHelper();
     int initWindow(int width = 800, int height = 600, const char *title = "Hello OpenGL");
-    void show(const std::function<void()>& func);
+    void show(const std::function<void()>& doFunc);
 public:
     int width;
     int height;

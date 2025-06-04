@@ -38,7 +38,7 @@ public:
     ~GLFWHelper();
     int initWindow(int width = 800, int height = 600, const char *title = "Hello OpenGL");
     void workWithCamera();
-    void show(const std::function<void()>& func);
+    void show(const std::function<void()>& doFunc);
 public:
     int width;
     int height;
@@ -96,8 +96,8 @@ private:
     static Camera *instance;
     glm::vec3 position; // 相机位置，即一个指向相机位置的向量
     glm::vec3 front;    // 相机朝向，即相机的正前方
-    glm::vec3 up;       // 相机的正上方
     glm::vec3 right;    // 相机的正右方
+    glm::vec3 up;       // 相机的正上方
     glm::vec3 worldUp;  // 世界坐标系的正上方
     float yaw;   // 偏航角，视线在 xz 平面上的投影和x轴的夹角，是描述如何往左或者往右看的角
     float pitch; // 俯仰角，视线和 xz 平面的夹角，是描述如何往上或者往下看的角

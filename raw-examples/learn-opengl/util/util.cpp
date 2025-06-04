@@ -113,7 +113,7 @@ void GLFWHelper::workWithCamera()
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
-void GLFWHelper::show(const std::function<void()>& func)
+void GLFWHelper::show(const std::function<void()>& doFunc)
 {
     while (!glfwWindowShouldClose(window)) {
         // 处理输入
@@ -139,7 +139,7 @@ void GLFWHelper::show(const std::function<void()>& func)
             }
         }
 
-        func();
+        doFunc();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -239,7 +239,7 @@ Camera *Camera::instance = nullptr;
 
 Camera::Camera() :
     FirstMouse(true), LastX(0.0f), LastY(0.0f), Zoom(45.0f),
-    position(0.0f, 0.0f, 3.0f), up(0.0f, 1.0f, 0.0f), front(0.0f, 0.0f, -1.0f),
+    position(0.0f, 0.0f, 3.0f), front(0.0f, 0.0f, -1.0f), up(0.0f, 1.0f, 0.0f),
     yaw(-90.0f), pitch(0.0f), movementSpeed(2.5f), mouseSensitivity(0.1f)
 {
     worldUp = up;

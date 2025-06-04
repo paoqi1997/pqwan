@@ -41,7 +41,7 @@ int GLFWHelper::initWindow(int width, int height, const char *title)
     return 0;
 }
 
-void GLFWHelper::show(const std::function<void()>& func)
+void GLFWHelper::show(const std::function<void()>& doFunc)
 {
     while (!glfwWindowShouldClose(window)) {
         // 处理输入
@@ -49,7 +49,7 @@ void GLFWHelper::show(const std::function<void()>& func)
             glfwSetWindowShouldClose(window, true);
         }
 
-        func();
+        doFunc();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
