@@ -1,6 +1,6 @@
 # Learn OpenGL
 
-学习OpenGL。
+学习 OpenGL。
 
 ## 目录结构
 
