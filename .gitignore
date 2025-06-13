@@ -41,6 +41,9 @@ raw-examples/CppWithLua/lua-5.4.*
 # V8 10.6.194
 raw-examples/CppWithJs/v8_10.6.194
 
+# SDL 3.2.16
+raw-examples/AOI/SDL3-3.2.16*
+
 # Output directories
 build
 .xmake
