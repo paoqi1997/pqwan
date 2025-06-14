@@ -7,7 +7,8 @@
                 "${workspaceFolder}/raw-examples/CppWithLua/lua-5.4.7/src",
                 "${workspaceFolder}/raw-examples/CppWithLua/lua54",
                 "${workspaceFolder}/raw-examples/CppWithJs/v8_10.6.194/Inc",
-                "${workspaceFolder}/raw-examples/learn-opengl/3rd-party/include"
+                "${workspaceFolder}/raw-examples/learn-opengl/3rd-party/include",
+                "${workspaceFolder}/raw-examples/AOI/SDL3-3.2.16/include"
             ],
             "defines": [
                 "_DEBUG",
