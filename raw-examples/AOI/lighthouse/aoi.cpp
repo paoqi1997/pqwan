@@ -1,5 +1,4 @@
 #include "aoi.h"
-#include "map.h"
 
 const char* getEventString(AOIEventType event)
 {
@@ -25,11 +24,11 @@ bool Lighthouse::includes(float obj_x, float obj_y)
     auto bottomLeftCoord = coords.first;
     auto topRightCoord = coords.second;
 
-    int ox = static_cast<int>(obj_x);
-    int oy = static_cast<int>(obj_y);
+    int obj_ix = static_cast<int>(obj_x);
+    int obj_iy = static_cast<int>(obj_y);
 
-    bool ok1 = ox >= bottomLeftCoord.x && oy >= bottomLeftCoord.y;
-    bool ok2 = ox < topRightCoord.x && oy < topRightCoord.y;
+    bool ok1 = obj_ix >= bottomLeftCoord.x && obj_iy >= bottomLeftCoord.y;
+    bool ok2 = obj_ix < topRightCoord.x && obj_iy < topRightCoord.y;
 
     return ok1 && ok2;
 }

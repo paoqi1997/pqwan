@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 #include "aoi.h"
 #include "helper.h"

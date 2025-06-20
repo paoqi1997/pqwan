@@ -3,6 +3,7 @@
 
 #include <unordered_set>
 
+#include "map.h"
 #include "object.h"
 #include "singleton.h"
 
@@ -37,8 +38,6 @@ private:
     std::unordered_set<Object*> objects;   // 在灯塔的视野范围内的对象集合
     std::unordered_set<Object*> observers; // 获得灯塔的视野范围的对象集合
 };
-
-class Map;
 
 class AOI : public Singleton<AOI>
 {

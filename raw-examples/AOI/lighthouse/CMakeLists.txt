@@ -11,7 +11,7 @@ set(LIBS_DIR ${SDL3_DIR}/build/Debug)
 include_directories(${INCS_DIR})
 link_directories(${LIBS_DIR})
 
-file (GLOB SRCS *.cpp)
+file(GLOB SRCS *.cpp)
 
 set(LIBS SDL3)
 set(BIN app)

@@ -1,4 +1,4 @@
-#include <iostream>
+#include <cstdio>
 
 #include "aoi.h"
 #include "map.h"
