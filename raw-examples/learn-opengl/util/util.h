@@ -8,10 +8,33 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 namespace pqwan
 {
+
+template <typename T>
+class Singleton
+{
+public:
+    static T* getInstance() {
+        if (instance == nullptr) {
+            instance = new T();
+        }
+        return instance;
+    }
+    Singleton(const Singleton&) = delete;
+    Singleton(Singleton&&) = delete;
+    Singleton& operator = (const Singleton&) = delete;
+    Singleton& operator = (Singleton&&) = delete;
+protected:
+    Singleton() = default;
+    virtual ~Singleton() = default;
+private:
+    static T* instance;
+};
+
+template <typename T>
+T* Singleton<T>::instance = nullptr;
 
 class File
 {
@@ -53,7 +76,9 @@ class ShaderHelper
 public:
     bool init(const char *vertexShaderFilePath = "shader.vert", const char *fragmentShaderFilePath = "shader.frag");
     void use();
-    int getShaderProgram() { return shaderProgram; }
+    void uniformVec3(const std::string& name, float x, float y, float z);
+    void uniformMat4(const std::string& name, const glm::mat4& matrix);
+    int getShaderProgram() const { return shaderProgram; }
 private:
     int loadVertexShader(const char *vertexShaderFilePath);
     int loadFragmentShader(const char *fragmentShaderFilePath);
@@ -62,29 +87,23 @@ private:
     int shaderProgram;
 };
 
-class Camera
+class Camera : public Singleton<Camera>
 {
+    // Singleton<Camera> 访问 Camera 私有的构造函数
+    friend class Singleton<Camera>;
 public:
-    enum Direction {
+    enum class Direction {
         FORWARD,
         BACKWARD,
         LEFT,
         RIGHT,
     };
-public:
-    static Camera* getInstance() {
-        if (instance == nullptr) {
-            instance = new Camera();
-        }
-        return instance;
-    }
-    Camera(const Camera&) = delete;
-    Camera& operator = (const Camera&) = delete;
     glm::mat4 getViewMatrix();
     void handleKeyboard(Direction direction, float deltaTime);
     void handleMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
     void handleMouseScroll(float yoffset);
 private:
+    Camera();
     void onUpdateVectors();
 public:
     bool FirstMouse; // 是否首次移动鼠标
@@ -92,8 +111,6 @@ public:
     float LastY;     // 上一帧鼠标光标的y坐标
     float Zoom;      // FOV
 private:
-    Camera();
-    static Camera *instance;
     glm::vec3 position; // 相机位置，即一个指向相机位置的向量
     glm::vec3 front;    // 相机朝向，即相机的正前方
     glm::vec3 right;    // 相机的正右方

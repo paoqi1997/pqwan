@@ -5,6 +5,8 @@
 
 #include <glad/glad.h>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include "util.h"
 
 using namespace pqwan;
@@ -115,6 +117,8 @@ void GLFWHelper::workWithCamera()
 
 void GLFWHelper::show(const std::function<void()>& doFunc)
 {
+    Camera *camera = Camera::getInstance();
+
     while (!glfwWindowShouldClose(window)) {
         // 处理输入
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -126,16 +130,14 @@ void GLFWHelper::show(const std::function<void()>& doFunc)
             float deltaTime = currFrameTime - lastFrameTime;
             lastFrameTime = currFrameTime;
 
-            Camera *camera = Camera::getInstance();
-
             if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-                camera->handleKeyboard(Camera::FORWARD, deltaTime);
+                camera->handleKeyboard(Camera::Direction::FORWARD, deltaTime);
             } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-                camera->handleKeyboard(Camera::BACKWARD, deltaTime);
+                camera->handleKeyboard(Camera::Direction::BACKWARD, deltaTime);
             } else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-                camera->handleKeyboard(Camera::LEFT, deltaTime);
+                camera->handleKeyboard(Camera::Direction::LEFT, deltaTime);
             } else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-                camera->handleKeyboard(Camera::RIGHT, deltaTime);
+                camera->handleKeyboard(Camera::Direction::RIGHT, deltaTime);
             }
         }
 
@@ -156,6 +158,18 @@ bool ShaderHelper::init(const char *vertexShaderFilePath, const char *fragmentSh
 void ShaderHelper::use()
 {
     glUseProgram(shaderProgram);
+}
+
+void ShaderHelper::uniformVec3(const std::string& name, float x, float y, float z)
+{
+    GLint uniformLocation = glGetUniformLocation(shaderProgram, name.c_str());
+    glUniform3f(uniformLocation, x, y, z);
+}
+
+void ShaderHelper::uniformMat4(const std::string& name, const glm::mat4& matrix)
+{
+    GLint uniformLocation = glGetUniformLocation(shaderProgram, name.c_str());
+    glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 int ShaderHelper::loadVertexShader(const char *vertexShaderFilePath)
@@ -235,8 +249,6 @@ bool ShaderHelper::linkProgram(int vertexShader, int fragmentShader)
     return true;
 }
 
-Camera *Camera::instance = nullptr;
-
 Camera::Camera() :
     FirstMouse(true), LastX(0.0f), LastY(0.0f), Zoom(45.0f),
     position(0.0f, 0.0f, 3.0f), front(0.0f, 0.0f, -1.0f), up(0.0f, 1.0f, 0.0f),
@@ -258,16 +270,16 @@ void Camera::handleKeyboard(Direction direction, float deltaTime)
 
     switch (direction)
     {
-    case FORWARD:
+    case Direction::FORWARD:
         position += front * velocity;
         break;
-    case BACKWARD:
+    case Direction::BACKWARD:
         position -= front * velocity;
         break;
-    case LEFT:
+    case Direction::LEFT:
         position -= right * velocity;
         break;
-    case RIGHT:
+    case Direction::RIGHT:
         position += right * velocity;
         break;
     default:

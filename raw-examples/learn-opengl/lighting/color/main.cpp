@@ -139,13 +139,8 @@ int main()
         // 物体
         shaderHelper.use();
 
-        int shaderProgram = shaderHelper.getShaderProgram();
-
-        unsigned int objectColorLoc = glGetUniformLocation(shaderProgram, "objectColor");
-        unsigned int lightColorLoc = glGetUniformLocation(shaderProgram, "lightColor");
-
-        glUniform3f(objectColorLoc, 1.0f, 0.5f, 0.31f);
-        glUniform3f(lightColorLoc, 1.0f, 1.0f, 1.0f);
+        shaderHelper.uniformVec3("objectColor", 1.0f, 0.5f, 0.31f);
+        shaderHelper.uniformVec3("lightColor", 1.0f, 1.0f, 1.0f);
 
         glm::mat4 model(1.0f);
 
@@ -161,14 +156,9 @@ int main()
         // 4. far用于剔除掉离相机太远的物体
         glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), aspect, 0.1f, 100.0f);
 
-        unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
-        unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
-        unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
-
-        // 将变换矩阵传递给着色器
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        shaderHelper.uniformMat4("model", model);
+        shaderHelper.uniformMat4("view", view);
+        shaderHelper.uniformMat4("projection", projection);
 
         glBindVertexArray(vArrayObj);
         // 绘制36个顶点
@@ -177,20 +167,13 @@ int main()
         // 灯
         lightShaderHelper.use();
 
-        int lightShaderProgram = lightShaderHelper.getShaderProgram();
-
         glm::mat4 lightModel(1.0f);
         lightModel = glm::translate(lightModel, lightPos);
         lightModel = glm::scale(lightModel, glm::vec3(0.2f));
 
-        unsigned int lightModelLoc = glGetUniformLocation(lightShaderProgram, "model");
-        unsigned int lightViewLoc = glGetUniformLocation(lightShaderProgram, "view");
-        unsigned int lightProjectionLoc = glGetUniformLocation(lightShaderProgram, "projection");
-
-        // 将变换矩阵传递给着色器
-        glUniformMatrix4fv(lightModelLoc, 1, GL_FALSE, glm::value_ptr(lightModel));
-        glUniformMatrix4fv(lightViewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(lightProjectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        lightShaderHelper.uniformMat4("model", lightModel);
+        lightShaderHelper.uniformMat4("view", view);
+        lightShaderHelper.uniformMat4("projection", projection);
 
         glBindVertexArray(lightVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
