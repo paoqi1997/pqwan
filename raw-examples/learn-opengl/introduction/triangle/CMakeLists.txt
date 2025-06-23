@@ -1,8 +1,8 @@
 cmake_minimum_required (VERSION 3.4)
 project (triangle)
 
-include_directories (../../../3rd-party/include)
-link_directories (../../../3rd-party/lib)
+include_directories (../../3rd-party/include)
+link_directories (../../3rd-party/lib)
 
 set (LIBS glad glfw3 opengl32)
 set (SRCS main.cpp)
