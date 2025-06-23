@@ -39,6 +39,30 @@
             "options": {
                 "cwd": "${workspaceFolder}/raw-examples/CppWithJs/calc"
             }
+        },
+        {
+            "type": "shell",
+            "label": "Learn OpenGL: cmake generate",
+            "command": "cmake -S . -B build",
+            "options": {
+                "cwd": "${workspaceFolder}/raw-examples/learn-opengl/lighting/color"
+            }
+        },
+        {
+            "type": "shell",
+            "label": "Learn OpenGL: cmake build",
+            "command": "cmake --build build",
+            "options": {
+                "cwd": "${workspaceFolder}/raw-examples/learn-opengl/lighting/color"
+            }
+        },
+        {
+            "label": "Learn OpenGL: cmake run",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Learn OpenGL: cmake generate",
+                "Learn OpenGL: cmake build"
+            ]
         }
     ],
     "version": "2.0.0",

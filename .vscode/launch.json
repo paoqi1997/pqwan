@@ -27,6 +27,18 @@
             "postDebugTask": "calc: xmake clean"
         },
         {
+            "name": "Debug app(Learn OpenGL)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}\\raw-examples\\learn-opengl\\lighting\\color\\build\\Debug\\app.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/raw-examples/learn-opengl/lighting/color",
+            "environment": [],
+            "console": "integratedTerminal",
+            "preLaunchTask": "Learn OpenGL: cmake run"
+        },
+        {
             "name": "Debug gameLogic",
             "type": "go",
             "request": "launch",
