@@ -121,12 +121,8 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), static_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
-    unsigned int lightVAO;
-    glGenVertexArrays(1, &lightVAO);
-    glBindVertexArray(lightVAO);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), static_cast<void*>(0));
-    glEnableVertexAttribArray(0);
+    pqwan::Sphere lightSphere;
+    lightSphere.loadVertices();
 
     float aspect = static_cast<float>(screenWidth) / static_cast<float>(screenHeight);
 
@@ -175,14 +171,12 @@ int main()
         lightShaderHelper.uniformMat4("view", view);
         lightShaderHelper.uniformMat4("projection", projection);
 
-        glBindVertexArray(lightVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        lightSphere.draw();
     };
 
     glfwHelper.show(doFunc);
 
     glDeleteVertexArrays(1, &vArrayObj);
-    glDeleteVertexArrays(1, &lightVAO);
     glDeleteBuffers(1, &vBufferObj);
 
     return 0;

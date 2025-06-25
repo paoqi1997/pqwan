@@ -1,4 +1,9 @@
 #include <cassert>
+
+// https://learn.microsoft.com/zh-cn/cpp/c-runtime-library/math-constants?view=msvc-170
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 #include <cstdio>
 #include <iostream>
 #include <vector>
@@ -325,11 +330,11 @@ void Camera::onUpdateVectors()
     glm::vec3 currFront;
 
     // yaw 的余弦值参与x分量的计算
-    currFront.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    currFront.x = std::cos(glm::radians(yaw)) * std::cos(glm::radians(pitch));
     // pitch 的正弦值就是y分量，应注意其余弦值会影响水平分量
-    currFront.y = sin(glm::radians(pitch));
+    currFront.y = std::sin(glm::radians(pitch));
     // yaw 的正弦值参与z分量的计算
-    currFront.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    currFront.z = std::sin(glm::radians(yaw)) * std::cos(glm::radians(pitch));
 
     // 均需要归一化处理
     front = glm::normalize(currFront);
@@ -337,4 +342,143 @@ void Camera::onUpdateVectors()
     right = glm::normalize(glm::cross(front, worldUp));
     // 对<相机正右方>和<相机正前方>做叉乘运算得到<相机正上方>
     up = glm::normalize(glm::cross(right, front));
+}
+
+Sphere::Sphere(float radius, int xSegments, int ySegments) : vao(0), vbo(0), ebo(0)
+{
+    generateVertices(radius, xSegments, ySegments);
+    generateIndices(radius, xSegments, ySegments);
+}
+
+Sphere::~Sphere()
+{
+    if (vao != 0) {
+        glDeleteVertexArrays(1, &vao);
+    }
+    if (vbo != 0) {
+        glDeleteBuffers(1, &vbo);
+    }
+    if (ebo != 0) {
+        glDeleteBuffers(1, &ebo);
+    }
+}
+
+void Sphere::generateVertices(float radius, int i_xSegments, int i_ySegments)
+{
+    constexpr float PI = M_PI;
+
+    float xSegments = static_cast<float>(i_xSegments);
+    float ySegments = static_cast<float>(i_ySegments);
+
+    float xStep = 2 * PI / xSegments; // [0, 2π]
+    float yStep = PI / ySegments;     // [-π/2, π/2]
+
+    for (int y = 0; y <= ySegments; ++y) {
+        float ySegment = y / ySegments;
+        float yAngle = y * yStep;
+
+        for (int x = 0; x <= xSegments; ++x) {
+            float xSegment = x / xSegments;
+            float xAngle = x * xStep;
+
+            // 球面坐标公式
+            float xPos = radius * std::sin(yAngle) * std::cos(xAngle);
+            float yPos = radius * std::cos(yAngle);
+            float zPos = radius * std::sin(yAngle) * std::sin(xAngle);
+
+            float xNormal = xPos / radius;
+            float yNormal = yPos / radius;
+            float zNormal = zPos / radius;
+
+            positions.emplace_back(glm::vec3{ xPos, yPos, zPos });
+            normals.emplace_back(glm::vec3{ xNormal, yNormal, zNormal });
+            uvs.emplace_back(glm::vec2{ xSegment, ySegment });
+        }
+    }
+}
+
+void Sphere::generateIndices(float radius, int xSegments, int ySegments)
+{
+    bool isOdd = false;
+
+    // 形成多个三角形条带
+    // if xSegments = 3, ySegments = 3
+    // 8(11) 9 10
+    // 4( 7) 5  6
+    // 0( 3) 1  2
+    for (int y = 0; y < ySegments; ++y) {
+        if (!isOdd) {
+            // 0, 4, 1, 5, 2, 6, 3, 7
+            // 4(7) 5 6 7
+            // 0(3) 1 2 3
+            for (int x = 0; x <= xSegments; ++x) {
+                // 当前行顶点 + 下一行同列顶点
+                indices.push_back(y * (xSegments + 1) + x);
+                indices.push_back((y + 1) * (xSegments + 1) + x);
+            }
+        } else {
+            // 不反向
+            // 8, 4, 9, 5, 10, 6, 11, 7
+            // 8(11) 9 10 11
+            // 4( 7) 5  6  7
+            // [3, 7, 8] [7, 8, 4]
+            // [7, 8, 4]: 顶点4和7的连接关系跨越了整个u轴
+
+            // 反向
+            // 11, 7, 10, 6, 9, 5, 8, 4
+            // 11(8) 10 9 8
+            //  7(4)  6 5 4
+            // [3, 7, 11] [7, 11, 7]
+            for (int x = xSegments; x >= 0; --x) {
+                // 下一行顶点 + 当前行同列顶点
+                indices.push_back((y + 1) * (xSegments + 1) + x);
+                indices.push_back(y * (xSegments + 1) + x);
+            }
+        }
+
+        isOdd = !isOdd;
+    }
+}
+
+void Sphere::loadVertices()
+{
+    std::vector<float> vertices;
+
+    for (std::size_t i = 0; i < positions.size(); ++i) {
+        vertices.push_back(positions[i].x);
+        vertices.push_back(positions[i].y);
+        vertices.push_back(positions[i].z);
+
+        vertices.push_back(normals[i].x);
+        vertices.push_back(normals[i].y);
+        vertices.push_back(normals[i].z);
+
+        vertices.push_back(uvs[i].x);
+        vertices.push_back(uvs[i].y);
+    }
+
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), static_cast<void*>(0));
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<void*>(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+}
+
+void Sphere::draw()
+{
+    glBindVertexArray(vao);
+    // 以三角形条带的形式绘制
+    glDrawElements(GL_TRIANGLE_STRIP, indices.size(), GL_UNSIGNED_INT, 0);
 }

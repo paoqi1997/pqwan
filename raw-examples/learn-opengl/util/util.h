@@ -4,6 +4,7 @@
 #include <fstream>
 #include <functional>
 #include <string>
+#include <vector>
 
 #include <GLFW/glfw3.h>
 
@@ -120,6 +121,27 @@ private:
     float pitch; // 俯仰角，视线和 xz 平面的夹角，是描述如何往上或者往下看的角
     float movementSpeed;    // 鼠标移动速度的基准值
     float mouseSensitivity; // 鼠标灵敏度
+};
+
+// 球体
+class Sphere
+{
+public:
+    Sphere(float radius = 1.0f, int xSegments = 64, int ySegments = 64);
+    ~Sphere();
+    void loadVertices();
+    void draw();
+private:
+    void generateVertices(float radius, int xSegments, int ySegments);
+    void generateIndices(float radius, int xSegments, int ySegments);
+private:
+    std::vector<glm::vec3> positions;  // 顶点坐标
+    std::vector<glm::vec3> normals;    // 法线
+    std::vector<glm::vec2> uvs;        // UV
+    std::vector<unsigned int> indices; // 顶点顺序索引
+    unsigned int vao;
+    unsigned int vbo;
+    unsigned int ebo;
 };
 
 } // namespace pqwan
