@@ -130,6 +130,8 @@ int main()
 
     glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
+    bool moving = true;
+
     auto doFunc = [&](){
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -166,6 +168,12 @@ int main()
 
         // 灯
         lightShaderHelper.use();
+
+        if (moving) {
+            float currFrameTime = static_cast<float>(glfwGetTime());
+            lightPos.x = 1.0f + std::sin(currFrameTime) * 2.0f;
+            lightPos.y = std::sin(currFrameTime / 2.0f) * 1.0f;
+        }
 
         glm::mat4 lightModel(1.0f);
         lightModel = glm::translate(lightModel, lightPos);
