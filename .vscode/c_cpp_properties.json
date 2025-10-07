@@ -15,7 +15,7 @@
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "D:/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.43.34808/bin/Hostx64/x64/cl.exe",
+            "compilerPath": "D:/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe",
             "cStandard": "c11",
             "cppStandard": "c++17"
         }

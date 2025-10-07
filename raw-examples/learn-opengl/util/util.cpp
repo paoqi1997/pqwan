@@ -171,6 +171,12 @@ void ShaderHelper::uniformVec3(const std::string& name, float x, float y, float 
     glUniform3f(uniformLocation, x, y, z);
 }
 
+void ShaderHelper::uniformVec3(const std::string& name, const glm::vec3& vector)
+{
+    GLint uniformLocation = glGetUniformLocation(shaderProgram, name.c_str());
+    glUniform3fv(uniformLocation, 1, glm::value_ptr(vector));
+}
+
 void ShaderHelper::uniformMat4(const std::string& name, const glm::mat4& matrix)
 {
     GLint uniformLocation = glGetUniformLocation(shaderProgram, name.c_str());
