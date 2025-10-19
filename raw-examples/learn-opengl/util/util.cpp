@@ -165,6 +165,12 @@ void ShaderHelper::use()
     glUseProgram(shaderProgram);
 }
 
+void ShaderHelper::uniformFloat(const std::string& name, float value)
+{
+    GLint uniformLocation = glGetUniformLocation(shaderProgram, name.c_str());
+    glUniform1f(uniformLocation, value);
+}
+
 void ShaderHelper::uniformVec3(const std::string& name, float x, float y, float z)
 {
     GLint uniformLocation = glGetUniformLocation(shaderProgram, name.c_str());

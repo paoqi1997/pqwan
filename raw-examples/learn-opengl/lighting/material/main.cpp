@@ -130,8 +130,6 @@ int main()
 
     glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
-    bool moving = true;
-
     auto doFunc = [&](){
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -139,10 +137,30 @@ int main()
         // 物体
         shaderHelper.use();
 
-        shaderHelper.uniformVec3("objectColor", 1.0f, 0.5f, 0.31f);
-        shaderHelper.uniformVec3("lightColor", 1.0f, 1.0f, 1.0f);
-        shaderHelper.uniformVec3("lightPos", lightPos);
+        shaderHelper.uniformVec3("light.position", lightPos);
         shaderHelper.uniformVec3("viewPos", camera->getPosition());
+
+        // 光照属性
+        glm::vec3 lightColor;
+
+        double currFrameTime = glfwGetTime();
+
+        lightColor.x = static_cast<float>(std::sin(currFrameTime * 2.0));
+        lightColor.y = static_cast<float>(std::sin(currFrameTime * 0.7));
+        lightColor.z = static_cast<float>(std::sin(currFrameTime * 1.3));
+
+        glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);   // 降低影响
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // 很低的影响
+
+        shaderHelper.uniformVec3("light.ambient", ambientColor);
+        shaderHelper.uniformVec3("light.diffuse", diffuseColor);
+        shaderHelper.uniformVec3("light.specular", 1.0f, 1.0f, 1.0f); // 最大强度
+
+        // 材质属性
+        shaderHelper.uniformVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+        shaderHelper.uniformVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+        shaderHelper.uniformVec3("material.specular", 0.5f, 0.5f, 0.5f); // 中等亮度
+        shaderHelper.uniformFloat("material.shininess", 32.0f);
 
         glm::mat4 model(1.0f);
 
@@ -168,12 +186,6 @@ int main()
 
         // 灯
         lightShaderHelper.use();
-
-        if (moving) {
-            float currFrameTime = static_cast<float>(glfwGetTime());
-            lightPos.x = 1.0f + std::sin(currFrameTime) * 2.0f;
-            lightPos.y = std::sin(currFrameTime / 2.0f) * 1.0f;
-        }
 
         glm::mat4 lightModel(1.0f);
         lightModel = glm::translate(lightModel, lightPos);

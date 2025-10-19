@@ -77,6 +77,7 @@ class ShaderHelper
 public:
     bool init(const char *vertexShaderFilePath = "shader.vert", const char *fragmentShaderFilePath = "shader.frag");
     void use();
+    void uniformFloat(const std::string& name, float value);
     void uniformVec3(const std::string& name, float x, float y, float z);
     void uniformVec3(const std::string& name, const glm::vec3& vector);
     void uniformMat4(const std::string& name, const glm::mat4& matrix);
